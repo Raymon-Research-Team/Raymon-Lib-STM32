@@ -14,7 +14,11 @@ private:
     bool isFeedBackInput;
 
     void DelayTransmit(int len) {
-        HAL_Delay((10 * 1000 * len / UART.Init.BaudRate));
+        #ifdef USE_FREERTOS            
+                vTaskDelay((10 * 1000 * len / UART.Init.BaudRate)); // تاخیر بر اساس میلی‌ثانیه
+        #else
+                HAL_Delay((10 * 1000 * len / UART.Init.BaudRate));
+        #endif
     }
 
 public:
