@@ -76,8 +76,6 @@ display.DisplayString("HELLO");
 -   HAL Library for STM32
 -   FreeRTOS (optional, if using FreeRTOS for delay)
 
-![](media/bd835bbfd2951a8fdda043710b78d45d.png)
-
 # راهنمای فارسی
 
 **کتابخانه IC_7Segment_74Hc595**
@@ -149,7 +147,9 @@ void DisplayString(const std::string& str)
 
 | پین STM32 | پین 74HC595 | توضیحات        |
 |-----------|-------------|----------------|
-| PB0       | DS          | ورودی داده     |
-| PB1       | SH_CP       | کلاک شیفت      |
-| PB2       | ST_CP       | کلاک ذخیره‌سازی |
-| PB3       | MR          | ریست اصلی      |
+| PA0       | SH_CP       | کلاک شیفت      |
+| PA1       | DS          | ورودی داده     |
+| PA2       | ST_CP       | کلاک ذخیره‌سازی |
+| PA3       | MR          | ریست اصلی      |
+
+![](media/bd835bbfd2951a8fdda043710b78d45d.png)
