@@ -12,33 +12,33 @@ This project includes the Calendar class, which provides functions for convertin
 
 ### 1. RTCToPersian
 
-cpp
-
-static Date RTCToPersian(RTC_HandleTypeDef \*hrtc);
+```
+static Date RTCToPersian(RTC_HandleTypeDef *hrtc);
+```
 
 Converts the date from RTC to Persian date.
 
 ### 2. RTCToGregorian
 
-cpp
-
-static Date RTCToGregorian(RTC_HandleTypeDef \*hrtc);
+```
+static Date RTCToGregorian(RTC_HandleTypeDef *hrtc);
+```
 
 Converts the date from RTC to Gregorian date.
 
 ### 3. GregorianToPersian
 
-cpp
-
+```
 static Date GregorianToPersian(Date GregorianDate);
+```
 
 Converts Gregorian date to Persian date.
 
 ### 4. PersianToGregorian
 
-cpp
-
+```
 static Date PersianToGregorian(Date PersianDate);
+```
 
 Converts Persian date to Gregorian date.
 
@@ -46,18 +46,16 @@ Converts Persian date to Gregorian date.
 
 To use the Calendar class, you must first define an instance of RTC_HandleTypeDef, and then you can use the available functions to convert dates. For example:
 
-cpp
-
+```
 RTC_HandleTypeDef hrtc;
-
 Calendar::Date persianDate = Calendar::RTCToPersian(&hrtc);
+```
 
 ## Notes
 
 • The input RTC date should be in BCD format.
 
 • This class is designed to work with standard STM32 RTCs.
-
 
 # کلاس تقویم برای تبدیل تاریخ RTC
 
@@ -73,33 +71,33 @@ Calendar::Date persianDate = Calendar::RTCToPersian(&hrtc);
 
 ### 1. RTCToPersian
 
-cpp
-
-static Date RTCToPersian(RTC_HandleTypeDef \*hrtc);
+```
+static Date RTCToPersian(RTC_HandleTypeDef *hrtc);
+```
 
 تاریخ را از RTC به تاریخ شمسی تبدیل می‌کند.
 
 ### 2. RTCToGregorian
 
-cpp
-
-static Date RTCToGregorian(RTC_HandleTypeDef \*hrtc);
+```
+static Date RTCToGregorian(RTC_HandleTypeDef *hrtc);
+```
 
 تاریخ را از RTC به تاریخ میلادی تبدیل می‌کند.
 
 ### 3. GregorianToPersian
 
-cpp
-
+```
 static Date GregorianToPersian(Date GregorianDate);
+```
 
 تاریخ میلادی را به تاریخ شمسی تبدیل می‌کند.
 
 ### 4. PersianToGregorian
 
-cpp
-
+```
 static Date PersianToGregorian(Date PersianDate);
+```
 
 تاریخ شمسی را به تاریخ میلادی تبدیل می‌کند.
 
@@ -107,11 +105,10 @@ static Date PersianToGregorian(Date PersianDate);
 
 برای استفاده از کلاس Calendar، ابتدا باید شیئی از نوع RTC_HandleTypeDef را تعریف کنید و سپس می‌توانید از توابع موجود برای تبدیل تاریخ استفاده کنید. به عنوان مثال:
 
-cpp
-
+```
 RTC_HandleTypeDef hrtc;
-
 Calendar::Date persianDate = Calendar::RTCToPersian(&hrtc);
+```
 
 ## نکات
 
@@ -121,9 +118,10 @@ Calendar::Date persianDate = Calendar::RTCToPersian(&hrtc);
 
 ## Sample:
 
-\#include "Calendar.h" extern RTC_HandleTypeDef hrtc;
+```Code Language
+#include "Calendar.h" 
+extern RTC_HandleTypeDef hrtc;
 
-```
   //get Date and Time of RTC:
     Calendar::Date date= Calendar::RTCToPersian(&hrtc);
   
@@ -133,6 +131,5 @@ Calendar::Date persianDate = Calendar::RTCToPersian(&hrtc);
   
   //Convert Persian Date to Gregorian Date:
     Calendar::Date Pdate = { 1403, 7, 10 };                       	// Pdate.Year = 1403; Pdate.Month = 7; Pdate.Day = 10;
-```
-
 Calendar::Date Gdate = Calendar::PersianToGregorian(Pdate); // Gdate.Year = 2024; Gdate.
+```
