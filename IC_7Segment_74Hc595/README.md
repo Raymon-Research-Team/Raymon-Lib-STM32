@@ -1,15 +1,15 @@
-**IC_7Segment_74Hc595 Library**
+# IC_7Segment_74Hc595 Library
 
 This library allows you to control a 7-segment display using the **74HC595** shift register and an STM32 microcontroller. It supports both common cathode and common anode displays, and can handle multiple 7-segment displays chained together.
 
-# Features
+## Features
 
 -   Display integer and decimal numbers.
 -   Display strings.
 -   Supports multiple 7-segment displays.
 -   Can invert output signals for common cathode or common anode displays.
 
-# Constructor
+## Constructor
 
 ```Code Language
 IC_7Segment_74Hc595(GPIO_TypeDef* DS_Port,
@@ -35,7 +35,7 @@ IC_7Segment_74Hc595(GPIO_TypeDef* DS_Port,
 -   **NumberOf7segment**: Number of 7-segment displays in use (default: 1).
 -   **Inverted_Output**: Set to true for common anode (inverted), false for common cathode.
 
-# Public Methods
+## Public Methods
 
 ```
 void DisplayDecimal(double number, int precision = 3)
@@ -55,14 +55,14 @@ void DisplayString(const std::string& str)
 
 Displays a string on the 7-segment display. If the string is longer than the number of available displays, it is truncated.
 
-# Internal Methods (Private)
+## Internal Methods (Private)
 
 -   void SendToIC(uint8_t data_SegmentPattern[]): Sends the segment pattern to the 74HC595 IC.
 -   uint8_t GetSegmentPattern(char character): Returns the segment pattern for a given character (0-9, A-F, '.', '-').
 -   void delay_ms(uint32_t delay): Provides delay functionality using HAL_Delay or FreeRTOS' vTaskDelay.
 -   void DoubleToString(double number, char\* buffer, int precision): Converts a floating-point number to a string.
 
-# Usage Example
+## Usage Example
 
 ```Code Language
 IC_7Segment_74Hc595 display(GPIOA, GPIO_PIN_0, GPIOB, GPIO_PIN_1, GPIOB, GPIO_PIN_2, GPIOC, GPIO_PIN_3, 2, false);
@@ -78,18 +78,19 @@ display.DisplayString("HELLO");
 
 # راهنمای فارسی
 
-**کتابخانه IC_7Segment_74Hc595**
+# کتابخانه IC_7Segment_74Hc595
 
-این کتابخانه برای کنترل نمایشگرهای 7 سگمنت با استفاده از شیفت رجیستر **74HC595** و میکروکنترلر STM32 طراحی شده است. این کتابخانه از نمایشگرهای کاتد مشترک و آند مشترک پشتیبانی می‌کند و می‌تواند چندین نمایشگر 7 سگمنت را به هم متصل کند. 
+این کتابخانه برای کنترل نمایشگرهای 7 سگمنت با استفاده از شیفت رجیستر **74HC595** و میکروکنترلر STM32 طراحی شده است. این کتابخانه از نمایشگرهای کاتد مشترک و آند مشترک پشتیبانی می‌کند و می‌تواند چندین نمایشگر 7 سگمنت را به هم متصل کند.
 
-# ویژگی‌ها
+## ویژگی‌ها
 
 -   نمایش اعداد صحیح و اعشاری.
 -   نمایش رشته‌ها.
 -   پشتیبانی از چندین نمایشگر 7 سگمنت.
 -   قابلیت معکوس کردن سیگنال‌های خروجی برای نمایشگرهای کاتد یا آند مشترک.
 
-# سازنده
+## سازنده
+
 پین های میکرو را به عنوان خروجی و به صورت Open Drain در CubeMX پیکربندی کنید. در PCB توسط مقاومت 4.7K به 5+ ولت Pull Up شوند.خروجی های 74HC595 بهتر است با ترانزیستور یا ماسفت به سون سگمنت متصل شوند.
 
 ```Code Language
@@ -116,7 +117,7 @@ IC_7Segment_74Hc595(GPIO_TypeDef* DS_Port,
 -   **NumberOf7segment**: تعداد نمایشگرهای 7 سگمنت (پیش‌فرض: 1).
 -   **Inverted_Output**: در صورتی که نمایشگر آند مشترک باشد، مقدار true وارد کنید (پیش‌فرض: false).
 
-# متدهای عمومی
+## متدهای عمومی
 
 ```
 void DisplayDecimal(double number, int precision = 3)
@@ -136,15 +137,15 @@ void DisplayString(const std::string& str)
 
 نمایش رشته روی نمایشگر 7 سگمنت. اگر رشته طولانی‌تر از تعداد نمایشگرهای موجود باشد، کوتاه می‌شود.
 
-# سفارشی‌سازی
+## سفارشی‌سازی
 
 شما می‌توانید آرایه **segmentPatterns** را برای اضافه کردن الگوهای دلخواه برای کاراکترهای بیشتر تغییر دهید.
 
-# تأخیرها
+## تأخیرها
 
 این کتابخانه از تابع HAL_Delay() یا توابع تأخیر FreeRTOS بسته به پیکربندی پروژه استفاده می‌کند. مطمئن شوید که روش‌های تأخیر را بسته به استفاده یا عدم استفاده از FreeRTOS تنظیم کنید.
 
-# مثال سیم‌بندی
+## مثال سیم‌بندی
 
 | پین STM32 | پین 74HC595 | توضیحات        |
 |-----------|-------------|----------------|
