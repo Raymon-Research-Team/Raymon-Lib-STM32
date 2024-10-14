@@ -5,7 +5,7 @@
 #include <cstdio>  
 #include <string>  
 
-//===============================================================================
+//-------------------------------------------------------------------------------------------
 class PrintfUart {
     
 private:
@@ -20,14 +20,14 @@ private:
                 HAL_Delay((10 * 1000 * len / UART.Init.BaudRate));
         #endif
     }
-
+ //-------------------------------------------------------------------------------------------
 public:
     PrintfUart(UART_HandleTypeDef* huart, bool isFeedBackInput)
         : huart(huart), UART(*huart), isFeedBackInput(isFeedBackInput) {}
 
     
     
-//=============================================================================================    
+//-------------------------------------------------------------------------------------------    
 public:    
     template<typename... Args>
     void printf(const std::string& format, Args... args) {
@@ -43,7 +43,7 @@ public:
         HAL_UART_Transmit(huart, reinterpret_cast<uint8_t*>(buffer), len, HAL_MAX_DELAY); // ارسال داده‌ها به UART
         DelayTransmit(len);
     }
-
+ //-------------------------------------------------------------------------------------------
 private:
     // تبدیل رشته به const char* و سایر انواع به خودشان
     const char* ConvertToCStr(const std::string& value) {
@@ -54,7 +54,7 @@ private:
     T ConvertToCStr(T value) {
         return value;  // برای انواع دیگر، خود مقدار برگردانده می‌شود
     }
-//=============================================================================================
+//-------------------------------------------------------------------------------------------
 public:    
     template<typename... Args>
     void scanf(const std::string& format, Args&... args) {
@@ -85,7 +85,7 @@ public:
         
         
     }
-
+//-------------------------------------------------------------------------------------------
 private:
     // تابع برای پردازش هر آرگومان
     template<typename T>
@@ -114,7 +114,7 @@ private:
         // اجرای parseSingleArg برای هر آرگومان
         ((parseSingleArg(buffer, format, args)), ...);
     }
-    
+ //-------------------------------------------------------------------------------------------   
     template<typename T>
     void assignSingleArg(std::string buffer , std::string format, T& arg) {
         if constexpr (std::is_same<T, std::string>::value) {
@@ -139,7 +139,7 @@ private:
     }
     
 
-//=============================================================================================    
+//-------------------------------------------------------------------------------------------    
 public:
     char getchar() {
         char ch;
