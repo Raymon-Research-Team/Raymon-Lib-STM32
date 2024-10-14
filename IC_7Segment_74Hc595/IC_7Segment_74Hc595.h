@@ -1,6 +1,7 @@
 #pragma once
 #include "main.h"
 #include <string>
+#include <cctype>  // برای استفاده از تابع toupper
 
 class IC_7Segment_74Hc595 {
 private:
@@ -80,43 +81,32 @@ private:
     }
 
     // الگوهای سگمنت برای اعداد و حروف
-    uint8_t segmentPatterns[18] = {
-        0b00111111,
-        // 0
-        0b00000110,
-        // 1
-        0b01011011,
-        // 2
-        0b01001111,
-        // 3
-        0b01100110,
-        // 4
-        0b01101101,
-        // 5
-        0b01111101,
-        // 6
-        0b00000111,
-        // 7
-        0b01111111,
-        // 8
-        0b01101111,
-        // 9
-        0b01000000,
-        // -
-        0b01110111,
-        // A
-        0b01111100,
-        // B
-        0b00111001,
-        // C
-        0b01011110,
-        // D
-        0b01111001,
-        // E
-        0b01110001,
-        // F
-        0b10000000,
-        // .
+    uint8_t segmentPatterns[25] = {
+        0b00111111,        // 0
+        0b00000110,        // 1
+        0b01011011,        // 2
+        0b01001111,        // 3
+        0b01100110,        // 4
+        0b01101101,        // 5
+        0b01111101,        // 6
+        0b00000111,        // 7
+        0b01111111,        // 8
+        0b01101111,        // 9
+        0b01000000,        // -
+        0b01110111,        // A
+        0b01111100,        // B
+        0b00111001,        // C
+        0b01011110,        // D
+        0b01111001,        // E
+        0b01110001,        // F
+        0b10000000,        // .
+        0b01110110,        // H
+        0b00111000,        // L
+        0b01011100,        // O
+        0b01110011,        // P
+        0b00111110,        // U
+        0b00001000,        // _
+        0b00000000         // 
     };
 
     // تابع ارسال داده به 74HC595
@@ -140,23 +130,53 @@ private:
         HAL_GPIO_WritePin(_stPort, _stPin, GPIO_PIN_SET);
         delay_ms(1);
         HAL_GPIO_WritePin(_stPort, _stPin, GPIO_PIN_RESET);
+        HAL_GPIO_WritePin(_mrPort, _mrPin, GPIO_PIN_RESET);
     }
 
     // تابع دریافت الگوی سگمنت
-    uint8_t GetSegmentPattern(char character) {
+    uint8_t GetSegmentPattern(char character_in) {
+        char character = toupper(character_in);
+        uint8_t segment = 0;
         if (character >= '0' && character <= '9') {
-            return (_Inverted_Output) ? ~segmentPatterns[character - '0'] : segmentPatterns[character - '0'];
+            segment = segmentPatterns[character - '0'];
         }
         else if (character >= 'A' && character <= 'F') {
-            return (_Inverted_Output) ? ~segmentPatterns[character - 'A' + 11] : segmentPatterns[character - 'A' + 11];
+            segment = segmentPatterns[character - 'A' + 11];
         }
-        else if (character == '-') {
-            return (_Inverted_Output) ? ~segmentPatterns[10] : segmentPatterns[10];
+        switch (character)
+        {
+        case '-':
+            segment = segmentPatterns[10];   
+            break;
+        case '.':
+            segment = segmentPatterns[17];  
+            break;
+        case 'H':
+            segment = segmentPatterns[18];  
+            break;  
+        case 'L':
+            segment = segmentPatterns[19];  
+            break; 
+        case 'O':
+            segment = segmentPatterns[20];  
+            break; 
+        case 'P':
+            segment = segmentPatterns[21];  
+            break; 
+        case 'U':
+            segment = segmentPatterns[22];  
+            break; 
+        case '_':
+            segment = segmentPatterns[23];  
+            break; 
+        case ' ':
+            segment = segmentPatterns[24];  
+            break; 
+        default:
+            break;
         }
-        else if (character == '.') {
-            return (_Inverted_Output) ? ~segmentPatterns[17] : segmentPatterns[17];
-        }
-        return 0;
+        
+        return (_Inverted_Output) ? ~segment : segment;
     }
 
     // تابع تبدیل عدد اعشاری به رشته
