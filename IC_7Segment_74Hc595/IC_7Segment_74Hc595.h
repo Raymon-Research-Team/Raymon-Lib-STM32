@@ -47,7 +47,7 @@ public:
 
     // تابع نمایش عدد اعشاری
     void DisplayDecimal(double number, int precision = 3) {
-        char result[8]; // فضای بیشتر برای اطمینان
+        char result[255]; // فضای بیشتر برای اطمینان
         DoubleToString(number, result, precision);
         DisplayString(result);
 
