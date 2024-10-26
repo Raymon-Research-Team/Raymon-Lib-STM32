@@ -13,9 +13,9 @@ public:
 
 protected:
     virtual int overflow(int c) override {
-        if (c == '\n') {
-            HAL_UART_Transmit(huart, (uint8_t*)"\r", 1, HAL_MAX_DELAY); // ارسال '\r' قبل از '\n'
-        }
+        // if (c == '\n') {
+        //     HAL_UART_Transmit(huart, (uint8_t*)"\r", 1, HAL_MAX_DELAY); // ارسال '\r' قبل از '\n'
+        // }
         HAL_UART_Transmit(huart, (uint8_t*)&c, 1, HAL_MAX_DELAY); // ارسال کاراکتر به پورت سریال
         return c;
     }
@@ -34,9 +34,9 @@ protected:
     virtual int underflow() override {
         uint8_t ch;
         HAL_UART_Receive(huart, &ch, 1, HAL_MAX_DELAY); // دریافت یک کاراکتر از پورت سریال
-        if (ch == '\r') {
-            ch = '\n'; // تبدیل '\r' به '\n'
-        }
+        // if (ch == '\r') {
+        //     ch = '\n'; // تبدیل '\r' به '\n'
+        // }
         setg((char*)&ch, (char*)&ch, (char*)&ch + 1); // قرار دادن کاراکتر در بافر ورودی
         return ch;
     }
