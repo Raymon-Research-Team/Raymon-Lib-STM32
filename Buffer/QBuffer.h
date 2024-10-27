@@ -2,12 +2,12 @@
 #include <cstdint>
 #include <iostream>
 
-class Buffer {
+class QBuffer {
 public:
-    explicit Buffer(uint16_t bufferSize)
+    explicit QBuffer(uint16_t bufferSize)
         : bufferSize(bufferSize), buffer(new uint8_t[bufferSize]), readIndex(0), writeIndex(0), length(0) {}
 
-    ~Buffer() {
+    ~QBuffer() {
         delete[] buffer;
     }
     //-------------------------------------------------------------------------------------------
