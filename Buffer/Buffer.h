@@ -10,13 +10,13 @@ public:
     ~Buffer() {
         delete[] buffer;
     }
-
+    //-------------------------------------------------------------------------------------------
     void Flush() {
         readIndex = 0;
         writeIndex = 0;
         length = 0;
     }
-
+    //-------------------------------------------------------------------------------------------
     void Push(uint8_t data) {
         buffer[writeIndex] = data;
         writeIndex = (writeIndex + 1) % bufferSize;
@@ -24,7 +24,7 @@ public:
             length++;
         }
     }
-
+    //-------------------------------------------------------------------------------------------
     int Pop() {
         if (length == 0) return -1;
         uint8_t data = buffer[readIndex];
@@ -32,17 +32,17 @@ public:
         length--;
         return data;
     }
-
+    //-------------------------------------------------------------------------------------------
     int GetLength() const {
         return length;
     }
-
+    //-------------------------------------------------------------------------------------------
     int PeekAt(uint16_t index) const {
         if (index >= length) return -1;
         uint16_t position = (readIndex + index) % bufferSize;
         return buffer[position];
     }
-
+    //-------------------------------------------------------------------------------------------
     void Remove(uint16_t num) {
         if (num >= length) {
             Flush();
@@ -51,7 +51,7 @@ public:
             length -= num;
         }
     }
-
+    //-------------------------------------------------------------------------------------------
 private:
     const uint16_t bufferSize;
     uint8_t* buffer;
