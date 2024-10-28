@@ -5,9 +5,18 @@
 class CAN_BUS_PCA82C251T
 {
 public:
-    CAN_BUS_PCA82C251T(CAN_HandleTypeDef* phcan, uint8_t FIFO_Num, uint32_t filterID = 0x321)
-        : m_phcan(phcan), m_FIFO_Num(FIFO_Num), m_filterID(filterID)
+    CAN_BUS_PCA82C251T(CAN_HandleTypeDef* phcan, uint8_t FIFO_Num = CAN_RX_FIFO0, uint32_t filterID = 0x321)
+        : m_phcan(phcan)
+        , m_filterID(filterID)
     {
+        if (FIFO_Num == CAN_RX_FIFO0)
+        {
+            m_FIFO_Num = CAN_RX_FIFO0;
+        }
+        else
+        {
+            m_FIFO_Num =CAN_RX_FIFO1;
+        }
         CAN_Config();
     }
 
@@ -52,12 +61,13 @@ public:
             uint8_t Rxbuff[8];
             CAN_RxHeaderTypeDef RxHeader;
 
-            if (HAL_CAN_GetRxMessage(m_phcan, CAN_RX_FIFO0, &RxHeader, Rxbuff) == HAL_OK)
+            if (HAL_CAN_GetRxMessage(m_phcan, m_FIFO_Num, &RxHeader, Rxbuff) == HAL_OK)
             {
                 if (RxHeader.StdId == m_filterID)
                 {
                     for (int i = 0; i < RxHeader.DLC; i++)
-                        Cabin_buff_push(Rxbuff[i]);
+                        Qbuffer_CAN_push(Rxbuff[i]);       // create Qbuffer.h for this line
+                    
                 }
             }
         }
@@ -66,6 +76,8 @@ public:
 private:
     CAN_HandleTypeDef* m_phcan;
     uint8_t m_FIFO_Num;
+    
+    
     uint32_t m_filterID;
 
     void CAN_Config()

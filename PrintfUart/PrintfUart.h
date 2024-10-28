@@ -12,24 +12,19 @@ private:
 	UART_HandleTypeDef* huart;
 	UART_HandleTypeDef UART;
 	bool _isFeedBackInput = false;
-	bool _use_FreeRTOS = false;
 
 
 	void DelayTransmit(int len) {
-		if (_use_FreeRTOS)
-		{
-			vTaskDelay((10 * 1000 * len / UART.Init.BaudRate)); // تاخیر بر اساس میلی‌ثانیه
-		}
-		else
-		{
-			HAL_Delay((10 * 1000 * len / UART.Init.BaudRate));
-		}
-
+		#ifdef USE_FREERTOS
+					vTaskDelay((10 * 1000 * len / UART.Init.BaudRate)); // تاخیر بر اساس میلی‌ثانیه
+		#else
+					HAL_Delay((10 * 1000 * len / UART.Init.BaudRate));
+		#endif
 	}
 	//-------------------------------------------------------------------------------------------
 public:
-	PrintfUart(UART_HandleTypeDef* huart, bool isFeedBackInput = false, bool useFreeRTOS = false)
-		: huart(huart), UART(*huart), _isFeedBackInput(isFeedBackInput) , _use_FreeRTOS(useFreeRTOS) {}
+	PrintfUart(UART_HandleTypeDef* huart, bool isFeedBackInput = false)
+		: huart(huart), UART(*huart), _isFeedBackInput(isFeedBackInput){}
 
 
 
