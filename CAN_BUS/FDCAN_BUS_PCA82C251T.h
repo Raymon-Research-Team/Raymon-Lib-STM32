@@ -2,10 +2,10 @@
 #include "main.h"
 //-------------------------------------------------------------------------------------------
 
-class CAN_BUS_PCA82C251T {
+class FDCAN_BUS_PCA82C251T {
 public:
     // Constructor to initialize the CAN interface
-    CAN_BUS_PCA82C251T(FDCAN_HandleTypeDef *hfdcan, uint8_t fifoNum, uint32_t filterID1 = 0x321, uint32_t filterID2 = 0x7FF)
+    FDCAN_BUS_PCA82C251T(FDCAN_HandleTypeDef *hfdcan, uint8_t fifoNum, uint32_t filterID1 = 0x321, uint32_t filterID2 = 0x7FF)
         : hfdcan(hfdcan), FIFO_Num(fifoNum), defaultFilterID1(filterID1), defaultFilterID2(filterID2) {
         Configure();
     }
@@ -91,5 +91,9 @@ private:
     uint32_t defaultFilterID1;          // Default filter ID 1
     uint32_t defaultFilterID2;          // Default filter ID 2
 };
+
+
+
+
 
 

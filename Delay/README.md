@@ -14,9 +14,10 @@
 
 مثال:
 
-```
+~~~cpp
 Delay::delay_us(1000); // ایجاد تأخیر به مدت 1000 میکروثانیه (1 میلی‌ثانیه)
-```
+~~~
+
 
 ## تابع delay_ms(uint32_t ms):
 
@@ -24,9 +25,9 @@ Delay::delay_us(1000); // ایجاد تأخیر به مدت 1000 میکروثا�
 
 مثال:
 
-```
+~~~cpp
 Delay::delay_ms(100); // ایجاد تأخیر به مدت 100 میلی‌ثانیه
-```
+~~~
 
 ## دقت تأخیر
 
@@ -50,9 +51,9 @@ This function is used to create a delay based on microseconds. Its input is the 
 
 ## Example:
 
-```
+~~~cpp
 Delay::delay_us(1000); // Create a delay of 1000 microseconds (1 millisecond)
-```
+~~~
 
 ## Function delay_ms(uint32_t ms):
 
@@ -60,9 +61,9 @@ This function is used to create a delay based on milliseconds. Its input is the 
 
 ## Example:
 
-```
+~~~cpp
 Delay::delay_ms(100); // Create a delay of 100 milliseconds
-```
+~~~
 
 ## Delay Accuracy
 
