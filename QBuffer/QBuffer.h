@@ -4,7 +4,7 @@
 
 class QBuffer {
 public:
-    explicit QBuffer(uint16_t bufferSize)
+    explicit QBuffer(uint32_t bufferSize)
         : bufferSize(bufferSize), buffer(new uint8_t[bufferSize]), readIndex(0), writeIndex(0), length(0) {}
 
     ~QBuffer() {
@@ -37,13 +37,13 @@ public:
         return length;
     }
     //-------------------------------------------------------------------------------------------
-    int PeekAt(uint16_t index) const {
+    int PeekAt(uint32_t index) const {
         if (index >= length) return -1;
-        uint16_t position = (readIndex + index) % bufferSize;
+        uint32_t position = (readIndex + index) % bufferSize;
         return buffer[position];
     }
     //-------------------------------------------------------------------------------------------
-    void Remove(uint16_t num) {
+    void Remove(uint32_t num) {
         if (num >= length) {
             Flush();
         } else {
@@ -53,9 +53,9 @@ public:
     }
     //-------------------------------------------------------------------------------------------
 private:
-    const uint16_t bufferSize;
+    const uint32_t bufferSize;
     uint8_t* buffer;
-    uint16_t readIndex;
-    uint16_t writeIndex;
-    uint16_t length;
+    uint32_t readIndex;
+    uint32_t writeIndex;
+    uint32_t length;
 };
