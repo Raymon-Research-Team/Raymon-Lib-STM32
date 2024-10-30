@@ -87,6 +87,9 @@ int main() {
 ## Methods
 * `Check(QBuffer* _buffer, uint8_t* outputData, uint16_t& outputSize)`: Verifies the structure and CRC of packets, extracting data if valid.
 
+
+
+>
 # کلاس‌ها
 # QBuffer
 کلاس QBuffer یک بافر دایره‌ای است که داده‌ها را به صورت FIFO (اول وارد، اول خارج) ذخیره می‌کند و مدیریت می‌کند.
@@ -118,11 +121,12 @@ int main() {
 * `Remove(uint32_t num)`: حذف تعداد مشخصی از آیتم‌ها از بافر.
 * `Flush()`: پاکسازی تمامی محتوای بافر.
 
+
 # QPacket
+
 کلاس QPacket برای ایجاد یک بسته داده طراحی شده است. بسته‌ها شامل یک بایت شروع، شمارنده بسته، طول، CRC، داده‌ها و یک بایت پایان هستند.
 
 ## مثال:
-
 ```cpp
  #include "QPacket.h"
  
@@ -143,11 +147,12 @@ int main() {
 * `Create(const uint8_t* inputData, uint16_t inputSize, uint8_t* outputData, uint16_t& outputSize)`: یک بسته با داده‌ها و CRC فراهم شد
 ه ایجاد می‌کند و شمارنده بسته را برمی‌گرداند.
 
+
 # QCommand
+
 کلاس QCommand بسته‌های دریافتی در بافر را بررسی و رمزگشایی می‌کند و از ساختار صحیح و CRC معتبر اطمینان می‌دهد.
 
 ## مثال:
-
 ```cpp
 #include "QCommand.h"
 
