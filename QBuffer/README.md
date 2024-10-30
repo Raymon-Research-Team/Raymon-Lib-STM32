@@ -1,97 +1,171 @@
-# کلاس QBuffer
+# QPacket System Documentation
+This repository includes three main classes designed for buffer and packet processing within embedded systems or low-level applications. These classes are as follows:
 
-## معرفی
+### QBuffer: A ring buffer for efficient data storage.
+### QPacket: A packet creation utility for encoding and sending data.
+### QCommand: A command parser that reads and validates packets from the buffer.
+The code and examples are provided in both English and Persian.
 
-کلاس QBuffer یک بافر دایره‌ای با اندازه ثابت است که برای ذخیره و مدیریت داده‌های بایتی طراحی شده و عملیات‌هایی مانند push و pop را به صورت بهینه ارائه می‌دهد.
+## Classes Overview
+# QBuffer
+The QBuffer class provides a simple circular buffer implementation for storing and managing data. It’s designed to handle data in a FIFO (First In, First Out) manner.
 
-## ویژگی‌ها
+## Example Usage:
 
--   پیاده‌سازی بافر دایره‌ای
--   قابلیت تنظیم اندازه بافر
--   متدهای Push و Pop برای مدیریت داده‌ها
--   قابلیت مشاهده (Peek) و حذف داده‌ها
--   امکان پاکسازی بافر با متد Flush
-
-## متدها
-
-**void Push(uint8_t data)**
-
--   یک بایت (data) به بافر اضافه می‌کند و در صورت پر بودن بافر، قدیمی‌ترین داده‌ها را بازنویسی می‌کند.
-
-**int Pop()**
-
--   قدیمی‌ترین بایت را از بافر حذف و بازمی‌گرداند. اگر بافر خالی باشد، -1 بازمی‌گرداند.
-
-**int GetLength() const**
-
--   تعداد عناصر فعلی در بافر را بازمی‌گرداند.
-
-**int PeekAt(uint16_t index) const**
-
--   بایت در index مشخص را بدون حذف بازمی‌گرداند. اگر اندیس خارج از محدوده باشد، -1 بازمی‌گرداند.
-
-**void Remove(uint16_t num)**
-
--   تعداد بایت‌های مشخص شده را از بافر حذف می‌کند. اگر num از طول بافر بیشتر باشد، بافر پاکسازی می‌شود.
-
-**void Flush()**
-
--   تمام داده‌ها را از بافر حذف کرده و طول را به 0 تنظیم می‌کند.
-
-## مثال استفاده
-
-```C++
-#include <iostream>
+```cpp
 #include "QBuffer.h"
 
 int main() {
-    QBuffer buffer(10); // ایجاد یک بافر با ظرفیت 10 بایت
+    QBuffer buffer(10);  // Create a buffer of size 10
 
-    // افزودن داده به بافر
-    buffer.Push(5);
-    buffer.Push(10);
-    
-    // مشاهده داده‌ها
-    int peekedValue = buffer.PeekAt(1);
-    std::cout << "مقدار مشاهده شده: " << peekedValue << std::endl;
+    buffer.Push(0x12);    // Push data into the buffer
+    buffer.Push(0x34);
 
-    // برداشت داده
-    int poppedValue = buffer.Pop();
-    std::cout << "مقدار برداشته شده: " << poppedValue << std::endl;
+    int data = buffer.Pop();   // Read data from the buffer
+    std::cout << "Popped Data: " << data << std::endl;
 
-    // بررسی طول بافر
-    std::cout << "طول بافر: " << buffer.GetLength() << std::endl;
-
-    // پاکسازی بافر
-    buffer.Flush();
-    std::cout << "طول بافر پس از پاکسازی: " << buffer.GetLength() << std::endl;
-
-    return 0;
+    buffer.Flush();            // Clear the buffer
 }
 ```
 
-# Methods
+## Methods
+* `Push(uint8_t data)`: Add data to the buffer. 
+* `Pop()`: Remove and return the oldest data from the buffer.
+* `GetLength()`: Return the current number of items in the buffer.
+* `PeekAt(uint32_t index)`: Peek at data at a given index without removal.
+* `Remove(uint32_t num)`: Remove a specified number of items from the buffer.
+* `Flush()`: Clear all buffer contents.
 
-**void Push(uint8_t data)**
 
--   Adds a byte (data) to the buffer, overwriting oldest data if buffer is full.
+# QPacket
+The QPacket class creates a data packet format. Packets contain a start byte, packet counter, length, CRC check, data, and an end byte.
 
-**int Pop()**
+## Example Usage:
 
--   Removes and returns the oldest byte in the buffer. Returns -1 if buffer is empty.
+```cpp
+#include "QPacket.h"
 
-**int GetLength() const**
+int main() {
+    uint8_t inputData[] = {0x45, 0x78, 0x01};
+    uint8_t outputData[20];
+    uint16_t outputSize;
 
--   Returns the current number of elements in the buffer.
+    uint8_t packetCounter = QPacket::Create(inputData, 3, outputData, outputSize);
 
-**int PeekAt(uint16_t index) const**
+    std::cout << "Packet Counter: " << (int)packetCounter << "\n";
+    std::cout << "Packet Size: " << outputSize << std::endl;
+}
+```
 
--   Returns the byte at the given index without removing it. Returns -1 if index is out of range.
+## Methods
+* `Create(const uint8_t* inputData, uint16_t inputSize, uint8_t* outputData, uint16_t& outputSize)`: Constructs a packet with provided data and CRC, returning a counter for the packet.
 
-**void Remove(uint16_t num)**
+# QCommand
+The QCommand class checks and decodes packets received in the buffer, ensuring valid packet structure and CRC.
 
--   Removes the specified number of bytes from the buffer. Clears buffer if num exceeds buffer length.
+## Example Usage:
 
-**void Flush()**
+```cpp
+#include "QCommand.h"
 
--   Clears all data in the buffer, resetting length to 0.
+int main() {
+    QBuffer buffer(20);
+    uint8_t inputData[] = {0xAA, 0x01, 0x00, 0x03, 0xAB, 0x45, 0x78, 0x01, 0xBB};
+    for (uint8_t byte : inputData) {
+        buffer.Push(byte);
+    }
+
+    uint8_t outputData[10];
+    uint16_t outputSize;
+    uint8_t packetCounter = QCommand::Check(&buffer, outputData, outputSize);
+
+    std::cout << "Packet Counter: " << (int)packetCounter << "\n";
+    std::cout << "Data Length: " << outputSize << std::endl;
+}
+```
+
+## Methods
+* `Check(QBuffer* _buffer, uint8_t* outputData, uint16_t& outputSize)`: Verifies the structure and CRC of packets, extracting data if valid.
+
+# کلاس‌ها
+# QBuffer
+کلاس QBuffer یک بافر دایره‌ای است که داده‌ها را به صورت FIFO (اول وارد، اول خارج) ذخیره می‌کند و مدیریت می‌کند.
+
+## مثال:
+
+```cpp
+#include "QBuffer.h"
+
+int main() {
+    QBuffer buffer(10);  // ایجاد یک بافر با اندازه 10
+
+    buffer.Push(0x12);    // افزودن داده به بافر
+    buffer.Push(0x34);
+
+    int data = buffer.Pop();   // دریافت داده از بافر
+    std::cout << "داده حذف شده: " << data << std::endl;
+
+    buffer.Flush();            // پاکسازی بافر
+}
+```
+
+## توابع
+
+* `Push(uint8_t data)`: افزودن داده به بافر.
+* `Pop()`: حذف و بازگردانی قدیمی‌ترین داده از بافر.
+* `GetLength()`: بازگرداندن تعداد آیتم‌های موجود در بافر.
+* `PeekAt(uint32_t index)`: مشاهده داده در یک اندیس خاص بدون حذف.
+* `Remove(uint32_t num)`: حذف تعداد مشخصی از آیتم‌ها از بافر.
+* `Flush()`: پاکسازی تمامی محتوای بافر.
+
+# QPacket
+کلاس QPacket برای ایجاد یک بسته داده طراحی شده است. بسته‌ها شامل یک بایت شروع، شمارنده بسته، طول، CRC، داده‌ها و یک بایت پایان هستند.
+
+## مثال:
+
+```cpp
+ #include "QPacket.h"
+ 
+ int main() {
+     uint8_t inputData[] = {0x45, 0x78, 0x01};
+     uint8_t outputData[20];
+     uint16_t outputSize;
+     
+     uint8_t packetCounter = QPacket::Create(inputData, 3, outputData, outputSize);
+     
+     std::cout << "شمارنده بسته: " << (int)packetCounter << "\n";
+     std::cout << "اندازه بسته: " << outputSize << std::endl;
+ }
+```
+
+
+## توابع
+* `Create(const uint8_t* inputData, uint16_t inputSize, uint8_t* outputData, uint16_t& outputSize)`: یک بسته با داده‌ها و CRC فراهم شد
+ه ایجاد می‌کند و شمارنده بسته را برمی‌گرداند.
+
+# QCommand
+کلاس QCommand بسته‌های دریافتی در بافر را بررسی و رمزگشایی می‌کند و از ساختار صحیح و CRC معتبر اطمینان می‌دهد.
+
+## مثال:
+
+```cpp
+#include "QCommand.h"
+
+int main() {
+    QBuffer buffer(20);
+    uint8_t inputData[] = {0xAA, 0x01, 0x00, 0x03, 0xAB, 0x45, 0x78, 0x01, 0xBB};
+    for (uint8_t byte : inputData) {
+        buffer.Push(byte);
+    }
+
+    uint8_t outputData[10];
+    uint16_t outputSize;
+    uint8_t packetCounter = QCommand::Check(&buffer, outputData, outputSize);
+
+    std::cout << "شمارنده بسته: " << (int)packetCounter << "\n";
+    std::cout << "طول داده: " << outputSize << std::endl;
+}
+```
+
+## توابع
+`Check(QBuffer* _buffer, uint8_t* outputData, uint16_t& outputSize)`: ساختار و CRC بسته‌ها را بررسی کرده و در صورت معتبر بودن، داده‌ها را استخراج می‌کند.
