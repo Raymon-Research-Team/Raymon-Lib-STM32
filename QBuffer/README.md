@@ -1,9 +1,9 @@
 # QPacket System Documentation
 This repository includes three main classes designed for buffer and packet processing within embedded systems or low-level applications. These classes are as follows:
 
-### QBuffer: A ring buffer for efficient data storage.
-### QPacket: A packet creation utility for encoding and sending data.
-### QCommand: A command parser that reads and validates packets from the buffer.
+### **QBuffer**: <small>*A ring buffer for efficient data storage.*</small>
+### **QPacket**: *<small>A packet creation utility for encoding and sending data.</small>*
+### **QCommand**: *<small>A command parser that reads and validates packets from the buffer.</small>*
 The code and examples are provided in both English and Persian.
 
 ## Classes Overview
