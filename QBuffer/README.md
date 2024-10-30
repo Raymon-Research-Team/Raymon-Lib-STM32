@@ -114,12 +114,18 @@ int main() {
 
 ## توابع
 
-* `Push(uint8_t data)`: افزودن داده به بافر.
-* `Pop()`: حذف و بازگردانی قدیمی‌ترین داده از بافر.
-* `GetLength()`: بازگرداندن تعداد آیتم‌های موجود در بافر.
-* `PeekAt(uint32_t index)`: مشاهده داده در یک اندیس خاص بدون حذف.
-* `Remove(uint32_t num)`: حذف تعداد مشخصی از آیتم‌ها از بافر.
-* `Flush()`: پاکسازی تمامی محتوای بافر.
+* `Push(uint8_t data)`:
+افزودن داده به بافر.
+* `Pop()`:
+حذف و بازگردانی قدیمی‌ترین داده از بافر.
+* `GetLength()`:
+بازگرداندن تعداد آیتم‌های موجود در بافر.
+* `PeekAt(uint32_t index)`: 
+مشاهده داده در یک اندیس خاص بدون حذف.
+* `Remove(uint32_t num)`:
+حذف تعداد مشخصی از آیتم‌ها از بافر.
+* `Flush()`:
+پاکسازی تمامی محتوای بافر.
 
 
 # QPacket
@@ -144,7 +150,9 @@ int main() {
 
 
 ## توابع
-* `Create(const uint8_t* inputData, uint16_t inputSize, uint8_t* outputData, uint16_t& outputSize)`: یک بسته با داده‌ها و CRC فراهم شد
+* `Create(const uint8_t* inputData, uint16_t inputSize, uint8_t* outputData, uint16_t& outputSize)`:
+
+یک بسته با داده‌ها و CRC فراهم شد
 ه ایجاد می‌کند و شمارنده بسته را برمی‌گرداند.
 
 
@@ -173,4 +181,6 @@ int main() {
 ```
 
 ## توابع
-`Check(QBuffer* _buffer, uint8_t* outputData, uint16_t& outputSize)`: ساختار و CRC بسته‌ها را بررسی کرده و در صورت معتبر بودن، داده‌ها را استخراج می‌کند.
+`Check(QBuffer* _buffer, uint8_t* outputData, uint16_t& outputSize)`: 
+
+ساختار و CRC بسته‌ها را بررسی کرده و در صورت معتبر بودن، داده‌ها را استخراج می‌کند.
