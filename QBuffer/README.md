@@ -40,6 +40,24 @@ int main() {
 # QPacket
 The QPacket class creates a data packet format. Packets contain a start byte, packet counter, length, CRC check, data, and an end byte.
 
+```cpp
+========================================================
+Packet Format:
+========================================================
+Start Packet (0xAA)
+Packet Counter
+Packet len_MSB
+Packet len_LSB
+crc1
+data[]
+crc2
+End Packet (0xBB)
+========================================================
+```
+
+
+
+
 ## Example Usage:
 
 ```cpp
@@ -132,6 +150,23 @@ int main() {
 
 کلاس QPacket برای ایجاد یک بسته داده طراحی شده است. بسته‌ها شامل یک بایت شروع، شمارنده بسته، طول، CRC، داده‌ها و یک بایت پایان هستند.
 
+
+```cpp
+========================================================
+Packet Format:
+========================================================
+Start Packet (0xAA)
+Packet Counter
+Packet len_MSB
+Packet len_LSB
+crc1
+data[]
+crc2
+End Packet (0xBB)
+========================================================
+```
+
+
 ## مثال:
 ```cpp
  #include "QPacket.h"
@@ -184,3 +219,6 @@ int main() {
 `Check(QBuffer* _buffer, uint8_t* outputData, uint16_t& outputSize)`: 
 
 ساختار و CRC بسته‌ها را بررسی کرده و در صورت معتبر بودن، داده‌ها را استخراج می‌کند.
+
+# نکته:
+## حداکثر طول داده محدود شده به مقدار 512 بایت 
