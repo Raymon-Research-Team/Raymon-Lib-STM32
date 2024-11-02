@@ -27,8 +27,6 @@ IC_IO_Write_74Hc595(GPIO_TypeDef* DS_Port,
                     uint8_t NumberOfIC=1);
 
 ```
-
-## پارامترها
 * DS_Port: پورت GPIO برای Data Serial (DS).
 * DS_Pin: شماره پین GPIO برای Data Serial (DS).
 * SH_Port: پورت GPIO برای Shift (SH).
@@ -45,29 +43,26 @@ void write(const uint8_t* Data)
 ```
 
 یک آرایه از داده‌ها را به 74HC595 IC‌ها ارسال می‌کند. داده‌ها به صورت بیت به بیت انتقال می‌یابند.
-
-## پارامترها:
-
 * Data: اشاره‌گر به یک آرایه از بایت‌ها که باید به IC‌ها ارسال شود. 
+
+## 
 ```cpp
 void statePin(volatile uint8_t* Data, uint8_t indexIC, uint8_t pinNumber, GPIO_PinState state)
 ```
 
 وضعیت یک پین خاص را برای یک آی‌سی مشخص تنظیم می‌کند.
 
-## پارامترها:
-
 * Data: اشاره‌گر به آرایه داده‌ها که وضعیت پین‌ها را نشان می‌دهد. 
 * indexIC: ایندکس آی‌سی در آرایه داده. 
 * pinNumber: شماره پینی که باید وضعیت آن تنظیم شود (0-7). 
 * state: وضعیت مورد نظر (GPIO_PIN_SET یا GPIO_PIN_RESET). 
+
+## 
 ```cpp
 void togglePin(volatile uint8_t* Data, uint8_t indexIC, uint8_t pinNumber)
 ```
 
 وضعیت یک پین خاص را برای یک آی‌سی مشخص تغییر می‌دهد.
-
-## پارامترها:
 
 * Data: اشاره‌گر به آرایه داده‌ها که وضعیت پین‌ها را نشان می‌دهد. 
 * indexIC: ایندکس آی‌سی در آرایه داده. 
