@@ -13,14 +13,6 @@ private:
 	UART_HandleTypeDef UART;
 	bool _isFeedBackInput = false;
 
-
-	void DelayTransmit(int len) {
-		#ifdef USE_FREERTOS
-					vTaskDelay((10 * 1000 * len / UART.Init.BaudRate)); // تاخیر بر اساس میلی‌ثانیه
-		#else
-					HAL_Delay((10 * 1000 * len / UART.Init.BaudRate));
-		#endif
-	}
 	//-------------------------------------------------------------------------------------------
 public:
 	PrintfUart(UART_HandleTypeDef* huart, bool isFeedBackInput = false)
@@ -42,7 +34,7 @@ public:
 		}
 
 		HAL_UART_Transmit(huart, reinterpret_cast<uint8_t*>(buffer), len, HAL_MAX_DELAY); // ارسال داده‌ها به UART
-		DelayTransmit(len);
+    	while (HAL_UART_GetState(huart) != HAL_UART_STATE_READY) ;
 	}
 	//-------------------------------------------------------------------------------------------
 private:
@@ -67,7 +59,7 @@ public:
 			HAL_UART_Receive(huart, reinterpret_cast<uint8_t*>(&ch), 1, HAL_MAX_DELAY);
 			if (_isFeedBackInput) {
 				HAL_UART_Transmit(huart, reinterpret_cast<uint8_t*>(&ch), 1, HAL_MAX_DELAY);
-				DelayTransmit(1);
+    			while (HAL_UART_GetState(huart) != HAL_UART_STATE_READY) ;
 			}
 			if (ch == '\n' || ch == '\r') {
 				break;
@@ -149,7 +141,7 @@ public:
 		HAL_UART_Receive(huart, reinterpret_cast<uint8_t*>(&ch), 1, HAL_MAX_DELAY);
 		if (_isFeedBackInput) {
 			HAL_UART_Transmit(huart, reinterpret_cast<uint8_t*>(&ch), 1, HAL_MAX_DELAY);
-			DelayTransmit(1);
+    		while (HAL_UART_GetState(huart) != HAL_UART_STATE_READY) ;
 		}
 		return ch;
 	}
