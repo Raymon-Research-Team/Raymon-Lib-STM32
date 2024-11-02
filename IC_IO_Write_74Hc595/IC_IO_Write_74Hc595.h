@@ -63,15 +63,15 @@ public:
         HAL_GPIO_WritePin(_stPort, _stPin, GPIO_PIN_RESET);
         HAL_GPIO_WritePin(_mrPort, _mrPin, GPIO_PIN_RESET);
     }
-    //---------------------------------------------------------------------------------------
-    // set state pin for data input
-    void statePin(uint8_t* Data, uint8_t indexIC, uint8_t pinNumber, GPIO_PinState state)
+//---------------------------------------------------------------------------------------
+    // تنظیم وضعیت یک پین خاص
+    void statePin(volatile uint8_t* Data, uint8_t indexIC, uint8_t pinNumber, GPIO_PinState state)
     {
-        state ==  GPIO_PIN_SET ? Data[indexIC] |= (1 << pinNumber) :  Data[indexIC] &= ~(1 << pinNumber);
+        state == GPIO_PIN_SET ? Data[indexIC] |= (1 << pinNumber) : Data[indexIC] &= ~(1 << pinNumber);
     }
-    //---------------------------------------------------------------------------------------
-    // set toggle state pin for data input
-    void togglePin(uint8_t* Data, uint8_t indexIC, uint8_t pinNumber)
+//---------------------------------------------------------------------------------------
+    // تغییر وضعیت یک پین خاص
+    void togglePin(volatile uint8_t* Data, uint8_t indexIC, uint8_t pinNumber)
     {
         Data[indexIC] ^= (1 << pinNumber);
     }

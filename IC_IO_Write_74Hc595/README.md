@@ -1,100 +1,22 @@
-# IC_7Segment_74Hc595 Library
+# کلاس IC_IO_Write_74Hc595
 
-This library allows you to control a 7-segment display using the **74HC595** shift register and an STM32 microcontroller. It supports both common cathode and common anode displays, and can handle multiple 7-segment displays chained together.
-
-## Features
-
--   Display integer and decimal numbers.
--   Display strings.
--   Supports multiple 7-segment displays.
--   Can invert output signals for common cathode or common anode displays.
-
-## Constructor
-
-```Code Language
-IC_7Segment_74Hc595(GPIO_TypeDef* DS_Port,
-                    uint16_t DS_Pin,
-                    GPIO_TypeDef* SH_Port,
-                    uint16_t SH_Pin,
-                    GPIO_TypeDef* ST_Port,
-                    uint16_t ST_Pin,
-                    GPIO_TypeDef* MR_Port,
-                    uint16_t MR_Pin,
-                    uint8_t NumberOf7segment = 1,
-                    bool Inverted_Output = false);
-```
-
--   **DS_Port**: GPIO port for the DS (Data) pin.
--   **DS_Pin**: GPIO pin for the DS (Data) line.
--   **SH_Port**: GPIO port for the SH (Shift) pin.
--   **SH_Pin**: GPIO pin for the SH (Shift) line.
--   **ST_Port**: GPIO port for the ST (Latch) pin.
--   **ST_Pin**: GPIO pin for the ST (Latch) line.
--   **MR_Port**: GPIO port for the MR (Reset) pin.
--   **MR_Pin**: GPIO pin for the MR (Reset) line.
--   **NumberOf7segment**: Number of 7-segment displays in use (default: 1).
--   **Inverted_Output**: Set to true for common anode (inverted), false for common cathode.
-
-## Public Methods
-
-```
-void DisplayDecimal(double number, int precision = 3)
-```
-
-Displays a floating-point number on the 7-segment display, with specified decimal precision.
-
-```
-void DisplayNumber(int32_t number)
-```
-
-Displays an integer number on the 7-segment display.
-
-```
-void DisplayString(const std::string& str)
-```
-
-Displays a string on the 7-segment display. If the string is longer than the number of available displays, it is truncated.
-
-## Internal Methods (Private)
-
--   void SendToIC(uint8_t data_SegmentPattern[]): Sends the segment pattern to the 74HC595 IC.
--   uint8_t GetSegmentPattern(char character): Returns the segment pattern for a given character (0-9, A-F, '.', '-').
--   void delay_ms(uint32_t delay): Provides delay functionality using HAL_Delay or FreeRTOS' vTaskDelay.
--   void DoubleToString(double number, char\* buffer, int precision): Converts a floating-point number to a string.
-
-## Usage Example
-
-```Code Language
-IC_7Segment_74Hc595 display(GPIOA, GPIO_PIN_0, GPIOB, GPIO_PIN_1, GPIOB, GPIO_PIN_2, GPIOC, GPIO_PIN_3, 2, false);
-display.DisplayNumber(42);
-display.DisplayDecimal(3.1415, 2);
-display.DisplayString("HELLO");
-```
-
-**Dependencies**
-
--   HAL Library for STM32
--   FreeRTOS (optional, if using FreeRTOS for delay)
-
-# راهنمای فارسی
-
-# کتابخانه IC_7Segment_74Hc595
-
-این کتابخانه برای کنترل نمایشگرهای 7 سگمنت با استفاده از شیفت رجیستر **74HC595** و میکروکنترلر STM32 طراحی شده است. این کتابخانه از نمایشگرهای کاتد مشترک و آند مشترک پشتیبانی می‌کند و می‌تواند چندین نمایشگر 7 سگمنت را به هم متصل کند.
+کلاس `IC_IO_Write_74Hc595` برای ارتباط با شیفت رجیستر 74HC595 با استفاده از پین‌های GPIO در میکروکنترلرهای STM32 طراحی شده است. این کلاس متدهایی را برای ارسال داده به شیفت رجیستر، مدیریت پین‌های فردی و کنترل چندین آی‌سی ارائه می‌دهد.
 
 ## ویژگی‌ها
 
--   نمایش اعداد صحیح و اعشاری.
--   نمایش رشته‌ها.
--   پشتیبانی از چندین نمایشگر 7 سگمنت.
--   قابلیت معکوس کردن سیگنال‌های خروجی برای نمایشگرهای کاتد یا آند مشترک.
+- **انتقال داده**: ارسال داده به یک یا چند 74HC595 IC.
+- **مدیریت پین**: کنترل وضعیت پین‌های فردی و تغییر وضعیت آن‌ها.
+- **پیکربندی انعطاف‌پذیر**: مقداردهی اولیه با تعداد مختلفی از شیفت رجیسترها و پیکربندی‌های پین.
 
-## سازنده
+## نیازمندی‌ها
 
-پین های میکرو را به عنوان خروجی و به صورت Open Drain در CubeMX پیکربندی کنید. در PCB توسط مقاومت 4.7K به 5+ ولت Pull Up شوند.خروجی های 74HC595 بهتر است با ترانزیستور یا ماسفت به سون سگمنت متصل شوند.
+- کتابخانه STM32 HAL برای کنترل GPIO.
+- پشتیبانی از FreeRTOS (اختیاری).
 
-```Code Language
-IC_7Segment_74Hc595(GPIO_TypeDef* DS_Port,
+## سازنده کلاس
+
+```cpp
+IC_IO_Write_74Hc595(GPIO_TypeDef* DS_Port,
                     uint16_t DS_Pin,
                     GPIO_TypeDef* SH_Port,
                     uint16_t SH_Pin,
@@ -102,56 +24,81 @@ IC_7Segment_74Hc595(GPIO_TypeDef* DS_Port,
                     uint16_t ST_Pin,
                     GPIO_TypeDef* MR_Port,
                     uint16_t MR_Pin,
-                    uint8_t NumberOf7segment = 1,
-                    bool Inverted_Output = false);
+                    uint8_t NumberOfIC=1);
+
 ```
 
--   **DS_Port**: پورت GPIO برای پین DS (داده).
--   **DS_Pin**: پین GPIO برای خط DS (داده).
--   **SH_Port**: پورت GPIO برای پین SH (شیفت).
--   **SH_Pin**: پین GPIO برای خط SH (شیفت).
--   **ST_Port**: پورت GPIO برای پین ST (قفل).
--   **ST_Pin**: پین GPIO برای خط ST (قفل).
--   **MR_Port**: پورت GPIO برای پین MR (ریست).
--   **MR_Pin**: پین GPIO برای خط MR (ریست).
--   **NumberOf7segment**: تعداد نمایشگرهای 7 سگمنت (پیش‌فرض: 1).
--   **Inverted_Output**: در صورتی که نمایشگر آند مشترک باشد، مقدار true وارد کنید (پیش‌فرض: false).
+## پارامترها
+* DS_Port: پورت GPIO برای Data Serial (DS).
+* DS_Pin: شماره پین GPIO برای Data Serial (DS).
+* SH_Port: پورت GPIO برای Shift (SH).
+* SH_Pin: شماره پین GPIO برای Shift (SH).
+* ST_Port: پورت GPIO برای Storage (ST).
+* ST_Pin: شماره پین GPIO برای Storage (ST).
+* MR_Port: پورت GPIO برای Master Reset (MR).
+* MR_Pin: شماره پین GPIO برای Master Reset (MR).
+* NumberOfIC: تعداد 74HC595 IC‌هایی که باید کنترل شوند (پیش‌فرض 1).
 
 ## متدهای عمومی
-
-```
-void DisplayDecimal(double number, int precision = 3)
-```
-
-نمایش عدد اعشاری روی نمایشگر 7 سگمنت با دقت مشخص.
-
-```
-void DisplayNumber(int32_t number)
+```cpp
+void write(const uint8_t* Data)
 ```
 
-نمایش عدد صحیح روی نمایشگر 7 سگمنت.
+یک آرایه از داده‌ها را به 74HC595 IC‌ها ارسال می‌کند. داده‌ها به صورت بیت به بیت انتقال می‌یابند.
 
+## پارامترها:
+
+* Data: اشاره‌گر به یک آرایه از بایت‌ها که باید به IC‌ها ارسال شود. 
+```cpp
+void statePin(volatile uint8_t* Data, uint8_t indexIC, uint8_t pinNumber, GPIO_PinState state)
 ```
-void DisplayString(const std::string& str)
+
+وضعیت یک پین خاص را برای یک آی‌سی مشخص تنظیم می‌کند.
+
+## پارامترها:
+
+* Data: اشاره‌گر به آرایه داده‌ها که وضعیت پین‌ها را نشان می‌دهد. 
+* indexIC: ایندکس آی‌سی در آرایه داده. 
+* pinNumber: شماره پینی که باید وضعیت آن تنظیم شود (0-7). 
+* state: وضعیت مورد نظر (GPIO_PIN_SET یا GPIO_PIN_RESET). 
+```cpp
+void togglePin(volatile uint8_t* Data, uint8_t indexIC, uint8_t pinNumber)
 ```
 
-نمایش رشته روی نمایشگر 7 سگمنت. اگر رشته طولانی‌تر از تعداد نمایشگرهای موجود باشد، کوتاه می‌شود.
+وضعیت یک پین خاص را برای یک آی‌سی مشخص تغییر می‌دهد.
 
-## سفارشی‌سازی
+## پارامترها:
 
-شما می‌توانید آرایه **segmentPatterns** را برای اضافه کردن الگوهای دلخواه برای کاراکترهای بیشتر تغییر دهید.
+* Data: اشاره‌گر به آرایه داده‌ها که وضعیت پین‌ها را نشان می‌دهد. 
+* indexIC: ایندکس آی‌سی در آرایه داده. 
+* pinNumber: شماره پینی که باید وضعیت آن تغییر کند (0-7). 
 
-## تأخیرها
+## متدهای داخلی
+```cpp
+void delayms(uint32_t delay)
+```
 
-این کتابخانه از تابع HAL_Delay() یا توابع تأخیر FreeRTOS بسته به پیکربندی پروژه استفاده می‌کند. مطمئن شوید که روش‌های تأخیر را بسته به استفاده یا عدم استفاده از FreeRTOS تنظیم کنید.
+برای یک تعداد مشخصی از میلی‌ثانیه‌ها تأخیر می‌کند. اگر FreeRTOS در دسترس باشد، از آن استفاده می‌کند؛ در غیر این صورت، از HAL_Delay استفاده می‌کند.
 
-## مثال سیم‌بندی
+## مثال استفاده
 
-| پین STM32 | پین 74HC595 | توضیحات        |
-|-----------|-------------|----------------|
-| PA0       | SH_CP       | کلاک شیفت      |
-| PA1       | DS          | ورودی داده     |
-| PA2       | ST_CP       | کلاک ذخیره‌سازی |
-| PA3       | MR          | ریست اصلی      |
+```cpp
+// ایجاد یک نمونه از کلاس
+IC_IO_Write_74Hc595 shiftRegister(GPIOA, GPIO_PIN_0, GPIOA, GPIO_PIN_1, GPIOA, GPIO_PIN_2, GPIOA, GPIO_PIN_3, 2);
 
-![](media/bd835bbfd2951a8fdda043710b78d45d.png)
+// داده برای ارسال
+uint8_t dataToSend[2] = {0b10101010, 0b11001100};
+
+// نوشتن داده به شیفت رجیسترها
+shiftRegister.write(dataToSend);
+
+// تنظیم وضعیت یک پین خاص
+shiftRegister.statePin(dataToSend, 0, 3, GPIO_PIN_SET);
+
+// تغییر وضعیت یک پین
+shiftRegister.togglePin(dataToSend, 1, 5);
+```
+
+## نکات
+قبل از استفاده از این کلاس، اطمینان حاصل کنید که تنظیمات GPIO مناسب پیکربندی شده‌اند.
+تابع HAL_GPIO_WritePin برای کنترل پین‌های GPIO استفاده می‌شود که نیاز به کتابخانه HAL STM32 دارد.
