@@ -1,12 +1,10 @@
-# \# English README content
-
 # PrintfUart Library
 
-## \#\# Overview
+## Overview
 
 The \`PrintfUart\` class provides an easy interface for formatted input and output over UART in STM32 applications. It allows you to send formatted strings and read input with specified formats, making serial communication more convenient.
 
-## \#\# Features
+## Features
 
 \- Formatted output using printf-style formatting.
 
@@ -20,9 +18,12 @@ The \`PrintfUart\` class provides an easy interface for formatted input and outp
 
 To use the \`PrintfUart\` library, include the header file in your project and link it with your STM32 HAL library.
 
-```
+
+```cpp
 #include "PrintfUart.h"
 ```
+
+
 
 ## Usage
 
@@ -30,10 +31,13 @@ To use the \`PrintfUart\` library, include the header file in your project and l
 
 Create an instance of PrintfUart by passing the UART handle and feedback option.
 
-```Code Language
+
+```cpp
 UART_HandleTypeDef huart; // Your UART handle
-PrintfUart uart(&huart, true); // Set feedback input 
+PrintfUart uart(&huart, true); // Set feedback input
 ```
+
+
 
 ## 
 
@@ -41,7 +45,7 @@ PrintfUart uart(&huart, true); // Set feedback input
 
 You can send formatted data using the printf method:
 
-```
+```cpp
 uart.printf("Hello, %s! Number: %d\n", "World", 42);
 ```
 
@@ -51,7 +55,7 @@ uart.printf("Hello, %s! Number: %d\n", "World", 42);
 
 To receive formatted input, use the scanf method:
 
-```Code Language
+```cpp
 int number;
 std::string text;
 uart.scanf("%s %d", text, number);
@@ -63,7 +67,7 @@ uart.scanf("%s %d", text, number);
 
 Use the getchar method to read a single character from UART:
 
-```
+```cpp
 char receivedChar = uart.getchar();
 ```
 
@@ -71,7 +75,7 @@ char receivedChar = uart.getchar();
 
 ## Example
 
-```Code Language
+```cpp
 extern "C" void main() {
     UART_HandleTypeDef huart; // Initialize your UART here
     PrintfUart uart(&huart, true);
@@ -105,7 +109,7 @@ extern "C" void main() {
 
 برای استفاده از کتابخانه PrintfUart، فایل هدر را در پروژه خود گنجانده و آن را با کتابخانه HAL STM32 خود لینک کنید.
 
-```
+```cpp
 #include "PrintfUart.h"
 ```
 
@@ -115,7 +119,7 @@ extern "C" void main() {
 
 یک نمونه از PrintfUart با گذراندن دسته UART و گزینه بازخورد ایجاد کنید.
 
-```Code Language
+```cpp
 UART_HandleTypeDef huart; // دسته UART شما
 PrintfUart uart(&huart, true); // تنظیم بازخورد ورودی 
 ```
@@ -124,7 +128,7 @@ PrintfUart uart(&huart, true); // تنظیم بازخورد ورودی
 
 شما می‌توانید با استفاده از متد printf داده‌های فرمت‌دار ارسال کنید:
 
-```
+```cpp
 uart.printf("سلام، %s! شماره: %d\n", "دنیا", 42);
 ```
 
@@ -142,13 +146,13 @@ uart.scanf("%s %d", text, number);
 
 از متد getchar برای خواندن یک کاراکتر از UART استفاده کنید:
 
-```
+```cpp
 char receivedChar = uart.getchar();
 ```
 
 ## مثال
 
-```Code Language
+```cpp
 bool feedback = true;                    // feedback Of insert Character of uart to uart
 PrintfUart io(&huart1, feedback);        // initial uart for printf or scanf
 -----------------------------------------------------
