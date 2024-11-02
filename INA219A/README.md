@@ -31,9 +31,9 @@ INA219 یک ماژول سنجش جریان، ولتاژ و توان با دقت 
 ```cpp
 INA219 sensor(&hi2c1);
 
-float voltage = sensor.getVoltage();
-float current = sensor.getCurrent();
-float power = sensor.getPower();
+float voltage = sensor.getVoltage(); // بر حسب ‌ولت
+float current = sensor.getCurrent(); // بر حسب میلی‌آمپر
+float power = sensor.getPower();     // بر حسب میلی‌وات
 ```
 
 این کد به راحتی مقادیر ولتاژ، جریان و توان را از ماژول INA219 می‌خواند و آماده‌ی استفاده در سایر بخش‌های برنامه است.

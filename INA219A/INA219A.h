@@ -6,11 +6,9 @@
 class INA219 {
 public:
     INA219(I2C_HandleTypeDef *hi2c, uint8_t address = 0x40)
-        : i2c_handle(hi2c), i2c_address(address << 1) {}
-
-    bool begin() {
-        calibrate();
-        return true;
+        : i2c_handle(hi2c), i2c_address(address << 1) 
+    {
+        calibrate(); 
     }
 
     float getVoltage() {
@@ -20,12 +18,12 @@ public:
 
     float getCurrent() {
         uint16_t raw = readRegister(0x04); // خواندن رجیستر جریان
-        return raw * 0.001; // تبدیل مقدار خام به جریان (در آمپر)
+        return raw * 1.0; // تبدیل مقدار خام به میلی‌آمپر (هر واحد خام 1 میلی‌آمپر است)
     }
 
     float getPower() {
         uint16_t raw = readRegister(0x03); // خواندن رجیستر توان
-        return raw * 0.02; // تبدیل مقدار خام به توان (در وات)
+        return raw * 20.0; // تبدیل مقدار خام به میلی‌وات (هر واحد خام 20 میلی‌وات است)
     }
 
 private:
@@ -38,7 +36,7 @@ private:
 
     uint16_t readRegister(uint8_t reg) {
         uint8_t buffer[2];
-        HAL_I2C_Mem_Read(i2c_handle, i2c_address, reg, 1, buffer, 2, HAL_MAX_DELAY);
+        HAL_I2C_Mem_Read(i2c_handle, i2c_address, reg, 1, buffer, 2, 100); // HAL_MAX_DELAY);
         return (buffer[0] << 8) | buffer[1];
     }
 
@@ -46,7 +44,7 @@ private:
         uint8_t buffer[2];
         buffer[0] = (value >> 8) & 0xFF;
         buffer[1] = value & 0xFF;
-        HAL_I2C_Mem_Write(i2c_handle, i2c_address, reg, 1, buffer, 2, HAL_MAX_DELAY);
+        HAL_I2C_Mem_Write(i2c_handle, i2c_address, reg, 1, buffer, 2, 100);//HAL_MAX_DELAY);
     }
 };
 
