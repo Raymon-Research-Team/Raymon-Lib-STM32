@@ -136,7 +136,7 @@ uart.printf("سلام، %s! شماره: %d\n", "دنیا", 42);
 
 برای دریافت ورودی فرمت‌دار، از متد scanf استفاده کنید:
 
-```Code Language
+```cpp
 int number;
 std::string text;
 uart.scanf("%s %d", text, number);
