@@ -1,4 +1,4 @@
-# IC_7Segment_74Hc595 Library
+# IC_7Segment_74595 Library
 
 This library allows you to control a 7-segment display using the **74HC595** shift register and an STM32 microcontroller. It supports both common cathode and common anode displays, and can handle multiple 7-segment displays chained together.
 
@@ -11,8 +11,8 @@ This library allows you to control a 7-segment display using the **74HC595** shi
 
 ## Constructor
 
-```Code Language
-IC_7Segment_74Hc595(GPIO_TypeDef* DS_Port,
+```Cpp
+IC_7Segment_74595(GPIO_TypeDef* DS_Port,
                     uint16_t DS_Pin,
                     GPIO_TypeDef* SH_Port,
                     uint16_t SH_Pin,
@@ -37,19 +37,19 @@ IC_7Segment_74Hc595(GPIO_TypeDef* DS_Port,
 
 ## Public Methods
 
-```
+```Cpp
 void DisplayDecimal(double number, int precision = 3)
 ```
 
 Displays a floating-point number on the 7-segment display, with specified decimal precision.
 
-```
+```Cpp
 void DisplayNumber(int32_t number)
 ```
 
 Displays an integer number on the 7-segment display.
 
-```
+```Cpp
 void DisplayString(const std::string& str)
 ```
 
@@ -64,8 +64,8 @@ Displays a string on the 7-segment display. If the string is longer than the num
 
 ## Usage Example
 
-```Code Language
-IC_7Segment_74Hc595 display(GPIOA, GPIO_PIN_0, GPIOB, GPIO_PIN_1, GPIOB, GPIO_PIN_2, GPIOC, GPIO_PIN_3, 2, false);
+```Cpp
+IC_7Segment_74595 display(GPIOA, GPIO_PIN_0, GPIOB, GPIO_PIN_1, GPIOB, GPIO_PIN_2, GPIOC, GPIO_PIN_3, 2, false);
 display.DisplayNumber(42);
 display.DisplayDecimal(3.1415, 2);
 display.DisplayString("HELLO");
@@ -78,7 +78,7 @@ display.DisplayString("HELLO");
 
 # راهنمای فارسی
 
-# کتابخانه IC_7Segment_74Hc595
+# کتابخانه IC_7Segment_74595
 
 این کتابخانه برای کنترل نمایشگرهای 7 سگمنت با استفاده از شیفت رجیستر **74HC595** و میکروکنترلر STM32 طراحی شده است. این کتابخانه از نمایشگرهای کاتد مشترک و آند مشترک پشتیبانی می‌کند و می‌تواند چندین نمایشگر 7 سگمنت را به هم متصل کند.
 
@@ -93,8 +93,8 @@ display.DisplayString("HELLO");
 
 پین های میکرو را به عنوان خروجی و به صورت Open Drain در CubeMX پیکربندی کنید. در PCB توسط مقاومت 4.7K به 5+ ولت Pull Up شوند.خروجی های 74HC595 بهتر است با ترانزیستور یا ماسفت به سون سگمنت متصل شوند.
 
-```Code Language
-IC_7Segment_74Hc595(GPIO_TypeDef* DS_Port,
+```Cpp
+IC_7Segment_74595(GPIO_TypeDef* DS_Port,
                     uint16_t DS_Pin,
                     GPIO_TypeDef* SH_Port,
                     uint16_t SH_Pin,
@@ -119,19 +119,19 @@ IC_7Segment_74Hc595(GPIO_TypeDef* DS_Port,
 
 ## متدهای عمومی
 
-```
+```Cpp
 void DisplayDecimal(double number, int precision = 3)
 ```
 
 نمایش عدد اعشاری روی نمایشگر 7 سگمنت با دقت مشخص.
 
-```
+```Cpp
 void DisplayNumber(int32_t number)
 ```
 
 نمایش عدد صحیح روی نمایشگر 7 سگمنت.
 
-```
+```Cpp
 void DisplayString(const std::string& str)
 ```
 
