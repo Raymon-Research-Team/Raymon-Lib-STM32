@@ -104,6 +104,7 @@ void delayms(uint32_t delay);
 ## ورودی‌ها:
 
 - **delay**: مقدار تاخیر به میلی‌ثانیه.
+
 نکته: اگر USE_FREERTOS تعریف شده باشد، از vTaskDelay استفاده می‌شود و در غیر این صورت از HAL_Delay.
 
 ## مثال استفاده
@@ -115,9 +116,10 @@ IC_IO_Write_74595 myIC(GPIOA, GPIO_PIN_1, GPIOA, GPIO_PIN_2, GPIOA, GPIO_PIN_3, 
 
 void setup() {
     uint8_t data[2] = {0xAA, 0x55}; // داده نمونه برای دو آی‌سی
-    myIC.write(data);
+  
     myIC.statePin(data, 1, 3, GPIO_PIN_SET); // فعال‌سازی پین شماره 3 در آی‌سی دوم
     myIC.togglePin(data, 0, 7); // تغییر وضعیت پین شماره 7 در آی‌سی اول
+    myIC.write(data);
 }
 ```
 
