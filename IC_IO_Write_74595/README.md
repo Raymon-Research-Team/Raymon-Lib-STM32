@@ -1,104 +1,127 @@
-# کلاس IC_IO_Write_74Hc595
+### راهنمای استفاده از کلاس `IC_IO_Write_74595`
 
-کلاس `IC_IO_Write_74Hc595` برای ارتباط با شیفت رجیستر 74HC595 با استفاده از پین‌های GPIO در میکروکنترلرهای STM32 طراحی شده است. این کلاس متدهایی را برای ارسال داده به شیفت رجیستر، مدیریت پین‌های فردی و کنترل چندین آی‌سی ارائه می‌دهد.
+این کلاس برای کنترل آی‌سی 74HC595 (شیفت رجیستر) طراحی شده است و به کاربر امکان می‌دهد تا با استفاده از رابط‌های GPIO روی میکروکنترلر STM32، به آسانی داده‌ها را به آی‌سی 74HC595 ارسال کند و وضعیت پین‌ها را مدیریت نماید.
 
-## ویژگی‌ها
+---
 
-- **انتقال داده**: ارسال داده به یک یا چند 74HC595 IC.
-- **مدیریت پین**: کنترل وضعیت پین‌های فردی و تغییر وضعیت آن‌ها.
-- **پیکربندی انعطاف‌پذیر**: مقداردهی اولیه با تعداد مختلفی از شیفت رجیسترها و پیکربندی‌های پین.
+### مشخصات کلی
 
-## نیازمندی‌ها
+**نام کلاس**: `IC_IO_Write_74595`
 
-- کتابخانه STM32 HAL برای کنترل GPIO.
-- پشتیبانی از FreeRTOS (اختیاری).
+**شامل فایل‌ها**:
+- `main.h`
+- `<string>`
 
-## سازنده کلاس
+این کلاس دارای توابعی است که به کاربر اجازه می‌دهد داده‌ها را به شیفت رجیستر ارسال کرده و پین‌های خاصی از آی‌سی را فعال یا غیرفعال کند.
+
+---
+
+### فهرست ویژگی‌ها و توابع
+
+#### ویژگی‌ها (متغیرهای خصوصی)
+
+- **`_dsPort` و `_dsPin`**: مربوط به پورت و پین ورودی داده (DS) در آی‌سی 74HC595.
+- **`_shPort` و `_shPin`**: مربوط به پورت و پین شیفت (SH) برای انتقال داده‌ها.
+- **`_stPort` و `_stPin`**: مربوط به پورت و پین استروب (ST) برای ذخیره‌سازی داده‌ها در آی‌سی.
+- **`_mrPort` و `_mrPin`**: مربوط به پورت و پین ریست (MR) برای پاک‌کردن داده‌ها.
+- **`_numberOfIC`**: تعداد آی‌سی‌های 74HC595 متصل به هم.
+
+---
+
+#### توابع عمومی
+
+##### 1. سازنده `IC_IO_Write_74595`
+این سازنده پورت‌ها و پین‌های مورد نیاز را مقداردهی اولیه می‌کند.
 
 ```cpp
-IC_IO_Write_74Hc595(GPIO_TypeDef* DS_Port,
-                    uint16_t DS_Pin,
-                    GPIO_TypeDef* SH_Port,
-                    uint16_t SH_Pin,
-                    GPIO_TypeDef* ST_Port,
-                    uint16_t ST_Pin,
-                    GPIO_TypeDef* MR_Port,
-                    uint16_t MR_Pin,
-                    uint8_t NumberOfIC=1);
-
+IC_IO_Write_74595(GPIO_TypeDef* DS_Port, uint16_t DS_Pin, GPIO_TypeDef* SH_Port, uint16_t SH_Pin, GPIO_TypeDef* ST_Port, uint16_t ST_Pin, GPIO_TypeDef* MR_Port, uint16_t MR_Pin, uint8_t NumberOfIC=1);
 ```
-* DS_Port: پورت GPIO برای Data Serial (DS).
-* DS_Pin: شماره پین GPIO برای Data Serial (DS).
-* SH_Port: پورت GPIO برای Shift (SH).
-* SH_Pin: شماره پین GPIO برای Shift (SH).
-* ST_Port: پورت GPIO برای Storage (ST).
-* ST_Pin: شماره پین GPIO برای Storage (ST).
-* MR_Port: پورت GPIO برای Master Reset (MR).
-* MR_Pin: شماره پین GPIO برای Master Reset (MR).
-* NumberOfIC: تعداد 74HC595 IC‌هایی که باید کنترل شوند (پیش‌فرض 1).
 
-## متدهای عمومی
+## ورودی‌ها:
+
+- **DS_Port, DS_Pin**: پورت و پین ورودی داده.
+- **SH_Port, SH_Pin**: پورت و پین شیفت.
+- **ST_Port, ST_Pin**: پورت و پین استروب.
+- **MR_Port, MR_Pin**: پورت و پین ریست.
+- **NumberOfIC**: تعداد آی‌سی‌های 74HC595 متصل (پیش‌فرض 1).
+
+## 2. write
+این تابع یک آرایه از داده‌ها را به آی‌سی ارسال می‌کند.
+
+
 ```cpp
-void write(const uint8_t* Data)
+void write(const uint8_t* Data);
 ```
 
-یک آرایه از داده‌ها را به 74HC595 IC‌ها ارسال می‌کند. داده‌ها به صورت بیت به بیت انتقال می‌یابند.
-* Data: اشاره‌گر به یک آرایه از بایت‌ها که باید به IC‌ها ارسال شود. 
 
-## 
+## ورودی‌ها:
+
+- **Data**: آرایه‌ای از داده‌ها برای ارسال به آی‌سی.
+
+## 3. statePin
+این تابع وضعیت یک پین خاص را در آی‌سی مشخص می‌کند (فعال یا غیرفعال).
+
+
 ```cpp
-void statePin(volatile uint8_t* Data, uint8_t indexIC, uint8_t pinNumber, GPIO_PinState state)
+void statePin(volatile uint8_t* Data, uint8_t indexIC, uint8_t pinNumber, GPIO_PinState state);
 ```
 
-وضعیت یک پین خاص را برای یک آی‌سی مشخص تنظیم می‌کند.
 
-* Data: اشاره‌گر به آرایه داده‌ها که وضعیت پین‌ها را نشان می‌دهد. 
-* indexIC: ایندکس آی‌سی در آرایه داده. 
-* pinNumber: شماره پینی که باید وضعیت آن تنظیم شود (0-7). 
-* state: وضعیت مورد نظر (GPIO_PIN_SET یا GPIO_PIN_RESET). 
+## ورودی‌ها:
 
-## 
+- **Data**: آرایه‌ای از داده‌ها.
+- **indexIC**: شماره آی‌سی موردنظر.
+- **pinNumber**: شماره پین در آی‌سی.
+- **state**: وضعیت پین (GPIO_PIN_SET برای فعال، GPIO_PIN_RESET برای غیرفعال).
+
+## 4. togglePin
+این تابع وضعیت یک پین خاص را در آی‌سی تغییر می‌دهد.
+
+
 ```cpp
-void togglePin(volatile uint8_t* Data, uint8_t indexIC, uint8_t pinNumber)
+void togglePin(volatile uint8_t* Data, uint8_t indexIC, uint8_t pinNumber);
 ```
 
-وضعیت یک پین خاص را برای یک آی‌سی مشخص تغییر می‌دهد.
 
-* Data: اشاره‌گر به آرایه داده‌ها که وضعیت پین‌ها را نشان می‌دهد. 
-* indexIC: ایندکس آی‌سی در آرایه داده. 
-* pinNumber: شماره پینی که باید وضعیت آن تغییر کند (0-7). 
+## ورودی‌ها:
 
-## متدهای داخلی
+- **Data**: آرایه‌ای از داده‌ها.
+- **indexIC**: شماره آی‌سی موردنظر.
+- **pinNumber**: شماره پین در آی‌سی.
+
+## توابع خصوصی
 ```cpp
-void delayms(uint32_t delay)
+delayms
 ```
 
-برای یک تعداد مشخصی از میلی‌ثانیه‌ها تأخیر می‌کند. اگر FreeRTOS در دسترس باشد، از آن استفاده می‌کند؛ در غیر این صورت، از HAL_Delay استفاده می‌کند.
+این تابع برای ایجاد تاخیر در میلی‌ثانیه‌ها به کار می‌رود و از FreeRTOS یا HAL استفاده می‌کند.
+
+
+```cpp
+void delayms(uint32_t delay);
+```
+
+## ورودی‌ها:
+
+- **delay**: مقدار تاخیر به میلی‌ثانیه.
+نکته: اگر USE_FREERTOS تعریف شده باشد، از vTaskDelay استفاده می‌شود و در غیر این صورت از HAL_Delay.
 
 ## مثال استفاده
 
 ```cpp
-// ایجاد یک نمونه از کلاس
-IC_IO_Write_74Hc595 shiftRegister(GPIOA, GPIO_PIN_0, GPIOA, GPIO_PIN_1, GPIOA, GPIO_PIN_2, GPIOA, GPIO_PIN_3, 2);
+#include "IC_IO_Write_74595.h"
 
-// داده برای ارسال
-uint8_t dataToSend[2] = {0b10101010, 0b11001100};
+IC_IO_Write_74595 myIC(GPIOA, GPIO_PIN_1, GPIOA, GPIO_PIN_2, GPIOA, GPIO_PIN_3, GPIOA, GPIO_PIN_4, 2);
 
-// نوشتن داده به شیفت رجیسترها
-shiftRegister.write(dataToSend);
-
-// تنظیم وضعیت یک پین خاص
-shiftRegister.statePin(dataToSend, 0, 3, GPIO_PIN_SET);
-
-// تغییر وضعیت یک پین
-shiftRegister.togglePin(dataToSend, 1, 5);
+void setup() {
+    uint8_t data[2] = {0xAA, 0x55}; // داده نمونه برای دو آی‌سی
+    myIC.write(data);
+    myIC.statePin(data, 1, 3, GPIO_PIN_SET); // فعال‌سازی پین شماره 3 در آی‌سی دوم
+    myIC.togglePin(data, 0, 7); // تغییر وضعیت پین شماره 7 در آی‌سی اول
+}
 ```
 
-## نکات
-* قبل از استفاده از این کلاس، اطمینان حاصل کنید که تنظیمات GPIO مناسب پیکربندی شده‌اند. 
-تابع HAL_GPIO_WritePin برای کنترل پین‌های GPIO استفاده می‌شود که نیاز به کتابخانه HAL STM32 دارد.
 
-<mark> پین های میکروکنترلر باید Open-drain باشند.</mark>
-
-
-![نمونه شماتیک](media/2024-11-02%20182732.png)
+## نکات تکمیلی
+قبل از استفاده از کلاس، حتماً از پیکربندی صحیح پورت‌ها و پین‌های GPIO در STM32 اطمینان حاصل کنید.
+استفاده از تاخیرهای کوچک در عملکرد توابع به حفظ هماهنگی بین میکروکنترلر و آی‌سی‌ها کمک می‌کند.
