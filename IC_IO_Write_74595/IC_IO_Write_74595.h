@@ -2,7 +2,7 @@
 #include "main.h"
 #include <string>
 
-class IC_IO_Write_74Hc595 {
+class IC_IO_Write_74595 {
 private:
     GPIO_TypeDef* _dsPort; // پورت مربوط به DS
     uint16_t _dsPin; // پین مربوط به DS
@@ -17,7 +17,7 @@ private:
 
 public:
     // سازنده برای مقدار دهی اولیه پورت‌ها و پین‌ها
-    IC_IO_Write_74Hc595(GPIO_TypeDef* DS_Port,
+    IC_IO_Write_74595(GPIO_TypeDef* DS_Port,
         uint16_t DS_Pin,
         GPIO_TypeDef* SH_Port,
         uint16_t SH_Pin,
