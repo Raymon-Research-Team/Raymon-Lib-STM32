@@ -69,8 +69,7 @@ int main() {
         if (touchScreen.update(&x, &y)) {
             touchScreen.ConvXPTtoILI(&x, &y);
             // نمایش مختصات با printf
-            printf("X: %d, Y: %d
-", x, y);
+            printf("X: %d, Y: %d", x, y);
         }
 
         // می‌توان برای جلوگیری از بار زیاد روی CPU یک تأخیر کوچک قرار داد
