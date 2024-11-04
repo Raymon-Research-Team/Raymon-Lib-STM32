@@ -1,157 +1,102 @@
-# IC_7Segment_74Hc595 Library
+#  کلاس IC_IO_Read_74165
+## توضیحات کلی
+کلاس IC_IO_Read_74165 یک رابط کاربری برای خواندن داده‌ها از چندین آی‌سی شیفت رجیستر 74HC165 که به صورت parallel-in serial-out عمل می‌کنند، در میکروکنترلر STM32 فراهم می‌کند. این کلاس امکان اتصال و مدیریت چندین آی‌سی 74HC165 را از طریق تعریف پایه‌های دیتا، کلاک و کنترل بارگذاری فراهم می‌کند.
 
-This library allows you to control a 7-segment display using the **74HC595** shift register and an STM32 microcontroller. It supports both common cathode and common anode displays, and can handle multiple 7-segment displays chained together.
-
-## Features
-
--   Display integer and decimal numbers.
--   Display strings.
--   Supports multiple 7-segment displays.
--   Can invert output signals for common cathode or common anode displays.
-
-## Constructor
-
-```Code Language
-IC_7Segment_74Hc595(GPIO_TypeDef* DS_Port,
-                    uint16_t DS_Pin,
-                    GPIO_TypeDef* SH_Port,
-                    uint16_t SH_Pin,
-                    GPIO_TypeDef* ST_Port,
-                    uint16_t ST_Pin,
-                    GPIO_TypeDef* MR_Port,
-                    uint16_t MR_Pin,
-                    uint8_t NumberOf7segment = 1,
-                    bool Inverted_Output = false);
-```
-
--   **DS_Port**: GPIO port for the DS (Data) pin.
--   **DS_Pin**: GPIO pin for the DS (Data) line.
--   **SH_Port**: GPIO port for the SH (Shift) pin.
--   **SH_Pin**: GPIO pin for the SH (Shift) line.
--   **ST_Port**: GPIO port for the ST (Latch) pin.
--   **ST_Pin**: GPIO pin for the ST (Latch) line.
--   **MR_Port**: GPIO port for the MR (Reset) pin.
--   **MR_Pin**: GPIO pin for the MR (Reset) line.
--   **NumberOf7segment**: Number of 7-segment displays in use (default: 1).
--   **Inverted_Output**: Set to true for common anode (inverted), false for common cathode.
-
-## Public Methods
-
-```
-void DisplayDecimal(double number, int precision = 3)
-```
-
-Displays a floating-point number on the 7-segment display, with specified decimal precision.
-
-```
-void DisplayNumber(int32_t number)
-```
-
-Displays an integer number on the 7-segment display.
-
-```
-void DisplayString(const std::string& str)
-```
-
-Displays a string on the 7-segment display. If the string is longer than the number of available displays, it is truncated.
-
-## Internal Methods (Private)
-
--   void SendToIC(uint8_t data_SegmentPattern[]): Sends the segment pattern to the 74HC595 IC.
--   uint8_t GetSegmentPattern(char character): Returns the segment pattern for a given character (0-9, A-F, '.', '-').
--   void delay_ms(uint32_t delay): Provides delay functionality using HAL_Delay or FreeRTOS' vTaskDelay.
--   void DoubleToString(double number, char\* buffer, int precision): Converts a floating-point number to a string.
-
-## Usage Example
-
-```Code Language
-IC_7Segment_74Hc595 display(GPIOA, GPIO_PIN_0, GPIOB, GPIO_PIN_1, GPIOB, GPIO_PIN_2, GPIOC, GPIO_PIN_3, 2, false);
-display.DisplayNumber(42);
-display.DisplayDecimal(3.1415, 2);
-display.DisplayString("HELLO");
-```
-
-**Dependencies**
-
--   HAL Library for STM32
--   FreeRTOS (optional, if using FreeRTOS for delay)
-
-# راهنمای فارسی
-
-# کتابخانه IC_7Segment_74Hc595
-
-این کتابخانه برای کنترل نمایشگرهای 7 سگمنت با استفاده از شیفت رجیستر **74HC595** و میکروکنترلر STM32 طراحی شده است. این کتابخانه از نمایشگرهای کاتد مشترک و آند مشترک پشتیبانی می‌کند و می‌تواند چندین نمایشگر 7 سگمنت را به هم متصل کند.
+عملکرد اصلی کلاس شامل مقداردهی اولیه پورت‌ها و پایه‌های متصل به آی‌سی‌ها، خواندن داده‌ها از هر آی‌سی، و ذخیره‌ی آن در یک آرایه با تخصیص حافظه پویا است.
 
 ## ویژگی‌ها
 
--   نمایش اعداد صحیح و اعشاری.
--   نمایش رشته‌ها.
--   پشتیبانی از چندین نمایشگر 7 سگمنت.
--   قابلیت معکوس کردن سیگنال‌های خروجی برای نمایشگرهای کاتد یا آند مشترک.
+* پشتیبانی از چند آی‌سی 74HC165: این کلاس امکان مدیریت چندین آی‌سی متصل در یک زنجیره را فراهم می‌کند. 
+* تخصیص حافظه پویا: کلاس از حافظه پویا برای هر پایه‌ی ورودی و داده‌های هر آی‌سی استفاده می‌کند، و این باعث انعطاف‌پذیری آن برای تعداد مختلفی آی‌سی می‌شود. 
+* عملکرد خواندن داده‌ها: کلاس داده‌ی ۸ بیتی از هر آی‌سی را می‌خواند و در یک آرایه ذخیره می‌کند. 
+## نیازمندی‌ها
+* این کد با کتابخانه‌ی HAL میکروکنترلر STM32 طراحی شده و نیازمند موارد زیر است: 
 
-## سازنده
+* توابع GPIO در HAL میکروکنترلر STM32 
+پشتیبانی اختیاری از FreeRTOS در صورت تعریف USE_FREERTOS
+استفاده
 
-پین های میکرو را به عنوان خروجی و به صورت Open Drain در CubeMX پیکربندی کنید. در PCB توسط مقاومت 4.7K به 5+ ولت Pull Up شوند.خروجی های 74HC595 بهتر است با ترانزیستور یا ماسفت به سون سگمنت متصل شوند.
+## سازنده کلاس
+سازنده کلاس برای مقداردهی پورت‌ها و پایه‌های استفاده شده برای کنترل آی‌سی‌ها و تعداد آی‌سی‌ها طراحی شده است. پارامترهای زیر را نیاز دارد:
 
-```Code Language
-IC_7Segment_74Hc595(GPIO_TypeDef* DS_Port,
-                    uint16_t DS_Pin,
-                    GPIO_TypeDef* SH_Port,
-                    uint16_t SH_Pin,
-                    GPIO_TypeDef* ST_Port,
-                    uint16_t ST_Pin,
-                    GPIO_TypeDef* MR_Port,
-                    uint16_t MR_Pin,
-                    uint8_t NumberOf7segment = 1,
-                    bool Inverted_Output = false);
+
+```cpp
+IC_IO_Read_74165(
+    GPIO_TypeDef* IC_LD_Port,
+    uint16_t IC_LD_Pin,
+    GPIO_TypeDef* IC_INH_Port,
+    uint16_t IC_INH_Pin,
+    GPIO_TypeDef* IC_CLK_Port,
+    uint16_t IC_CLK_Pin,
+    GPIO_TypeDef* IC_inputPorts[],
+    uint16_t IC_inputPins[],
+    uint8_t numberOfIC
+);
 ```
 
--   **DS_Port**: پورت GPIO برای پین DS (داده).
--   **DS_Pin**: پین GPIO برای خط DS (داده).
--   **SH_Port**: پورت GPIO برای پین SH (شیفت).
--   **SH_Pin**: پین GPIO برای خط SH (شیفت).
--   **ST_Port**: پورت GPIO برای پین ST (قفل).
--   **ST_Pin**: پین GPIO برای خط ST (قفل).
--   **MR_Port**: پورت GPIO برای پین MR (ریست).
--   **MR_Pin**: پین GPIO برای خط MR (ریست).
--   **NumberOf7segment**: تعداد نمایشگرهای 7 سگمنت (پیش‌فرض: 1).
--   **Inverted_Output**: در صورتی که نمایشگر آند مشترک باشد، مقدار true وارد کنید (پیش‌فرض: false).
 
-## متدهای عمومی
+## توضیحات پارامترها
+* `IC_LD_Port و IC_LD_Pin`: پورت و پایه بارگذاری که داده‌ی موازی را در آی‌سی‌ها بارگذاری می‌کند. 
+* `IC_INH_Port و IC_INH_Pin`: پورت و پایه مهار برای کنترل خروجی. 
+* `IC_CLK_Port و IC_CLK_Pin`: پورت و پایه کلاک برای شیفت داده‌ها. 
+* `IC_inputPorts[]`: آرایه‌ای از پورت‌های GPIO برای خواندن داده‌ها از هر آی‌سی. 
+* `IC_inputPins[]`: آرایه‌ای از پایه‌های GPIO برای خواندن داده‌ها از هر آی‌سی. 
+* `numberOfIC`: تعداد آی‌سی‌های 74HC165 متصل. 
 
-```
-void DisplayDecimal(double number, int precision = 3)
-```
 
-نمایش عدد اعشاری روی نمایشگر 7 سگمنت با دقت مشخص.
+## مثال مقداردهی اولیه
+```cpp
+GPIO_TypeDef* inputPorts[] = {GPIOA, GPIOB, GPIOC}; // نمونه پورت‌های ورودی
+uint16_t inputPins[] = {GPIO_PIN_0, GPIO_PIN_1, GPIO_PIN_2}; // نمونه پایه‌های ورودی
 
-```
-void DisplayNumber(int32_t number)
+IC_IO_Read_74165 ioReader(GPIOA, GPIO_PIN_5, GPIOB, GPIO_PIN_6, GPIOC, GPIO_PIN_7, inputPorts, inputPins, 3);
 ```
 
-نمایش عدد صحیح روی نمایشگر 7 سگمنت.
 
+## تابع read
+تابع read داده‌ها را از هر آی‌سی بارگذاری کرده و یک اشاره‌گر به آرایه‌ای از داده‌های هر آی‌سی برمی‌گرداند.
+
+
+```cpp
+uint8_t* data = ioReader.read();
 ```
-void DisplayString(const std::string& str)
+
+
+
+## فرمت آرایه داده
+آرایه بازگشتی data حاوی مقادیر ۸ بیتی برای هر آی‌سی است که هر بیت نمایانگر یک بیت ورودی موازی از آی‌سی است.
+
+## متدهای خصوصی
+
+* `void delay_ms(uint32_t delay):` ایجاد تأخیر بر حسب میلی‌ثانیه. در صورت فعال بودن FreeRTOS از vTaskDelay استفاده می‌کند؛ در غیر این صورت از HAL_Delay. 
+* `void read_pin(uint8_t n)`: بیت خاصی از هر آی‌سی (توسط n مشخص شده) را از خروجی داده‌ها می‌خواند و آن را در آرایه io_data_read ذخیره می‌کند. 
+
+## مخرب
+مخرب برای آزادسازی حافظه‌ی تخصیص داده‌شده برای پورت‌های ورودی، پایه‌های ورودی، و آرایه داده‌ها استفاده می‌شود.
+
+```cpp
+~IC_IO_Read_74165();
 ```
 
-نمایش رشته روی نمایشگر 7 سگمنت. اگر رشته طولانی‌تر از تعداد نمایشگرهای موجود باشد، کوتاه می‌شود.
 
-## سفارشی‌سازی
 
-شما می‌توانید آرایه **segmentPatterns** را برای اضافه کردن الگوهای دلخواه برای کاراکترهای بیشتر تغییر دهید.
+## مثال استفاده در یک حلقه
 
-## تأخیرها
+```cpp
+while (1) {
+    uint8_t* data = ioReader.read();
+    for (int i = 0; i < numberOfIC; i++) {
+        printf("IC %d Data: 0x%X\n", i, data[i]);
+    }
+    HAL_Delay(500); // تأخیر ۵۰۰ میلی‌ثانیه
+}
+```
 
-این کتابخانه از تابع HAL_Delay() یا توابع تأخیر FreeRTOS بسته به پیکربندی پروژه استفاده می‌کند. مطمئن شوید که روش‌های تأخیر را بسته به استفاده یا عدم استفاده از FreeRTOS تنظیم کنید.
 
-## مثال سیم‌بندی
-
-| پین STM32 | پین 74HC595 | توضیحات        |
-|-----------|-------------|----------------|
-| PA0       | SH_CP       | کلاک شیفت      |
-| PA1       | DS          | ورودی داده     |
-| PA2       | ST_CP       | کلاک ذخیره‌سازی |
-| PA3       | MR          | ریست اصلی      |
-
-![](media/bd835bbfd2951a8fdda043710b78d45d.png)
+## وابستگی‌ها
+* کتابخانه‌ی STM32 HAL برای عملیات GPIO. 
+* FreeRTOS (اختیاری): برای مدیریت تأخیر در صورت تعریف USE_FREERTOS. 
+نکات
+* اطمینان حاصل کنید که فایل main.h تمام تعاریف و اینکلود‌های لازم برای توابع GPIO و HAL را دارد. 
+* تأخیر در delay_ms را بر اساس نیازهای زمانی برنامه تنظیم کنید. 
+مجوز
