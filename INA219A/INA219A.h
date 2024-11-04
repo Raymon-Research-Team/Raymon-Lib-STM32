@@ -36,7 +36,7 @@ private:
 
     uint16_t readRegister(uint8_t reg) {
         uint8_t buffer[2];
-        HAL_I2C_Mem_Read(i2c_handle, i2c_address, reg, 1, buffer, 2, 100); // HAL_MAX_DELAY);
+        HAL_I2C_Mem_Read(i2c_handle, i2c_address, reg, 1, buffer, 2, HAL_MAX_DELAY);
         return (buffer[0] << 8) | buffer[1];
     }
 
@@ -44,7 +44,7 @@ private:
         uint8_t buffer[2];
         buffer[0] = (value >> 8) & 0xFF;
         buffer[1] = value & 0xFF;
-        HAL_I2C_Mem_Write(i2c_handle, i2c_address, reg, 1, buffer, 2, 100);//HAL_MAX_DELAY);
+        HAL_I2C_Mem_Write(i2c_handle, i2c_address, reg, 1, buffer, 2, HAL_MAX_DELAY);
     }
 };
 
