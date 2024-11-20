@@ -23,6 +23,10 @@ public:
     int getVolume() const {
         return volume;
     }
+    
+    void setVolume(int value) {
+        volume = value;
+    }
 
     void handleInterrupt(uint16_t gpioPin) {
         if (powerStatus == false) return;
