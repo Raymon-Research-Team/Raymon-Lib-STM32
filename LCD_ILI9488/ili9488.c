@@ -80,8 +80,6 @@ void ILI9488_WritePixel(uint16_t x, uint16_t y, uint16_t color)
 
 void ILI9488_DrawBitmap(uint16_t w, uint16_t h, uint8_t *buff)
 {
-	//ILI9488_SetWindow(0, 0, 479, 319);
-	
 	LCD_CS_CLR;
 	LCD_RS_SET;
 	uint32_t LCD_SPIcount=0;
@@ -98,29 +96,44 @@ void ILI9488_DrawBitmap(uint16_t w, uint16_t h, uint8_t *buff)
 		LCD_SPI_buffer[LCD_SPIv_count] = (LCD_SPIcolor << 3); //BLUE
 		LCD_SPIv_count++;
 	}
-
-	//HAL_SPI_Transmit_IT(&hspi1, v, w*h*3);
 	HAL_SPI_Transmit_DMA(&hspi2, (uint8_t*)LCD_SPI_buffer, w*h * 3);
-	
-
-	/*	for (j = 0; j < 8; j++)
-		{
-			for (i = 0; i < 19200; i++)
-			{
-				color = buff[count + 1] << 8 | buff[count];
-				count += 2;
-				LCD_SPI_buffer[v_count] = ((color >> 8) & 0xF8); //RED
-				v_count++;
-				LCD_SPI_buffer[v_count] = ((color >> 3) & 0xFC); //GREEN
-				v_count++;
-				LCD_SPI_buffer[v_count] = (color << 3); //BLUE
-				v_count++;
-		}
-		HAL_SPI_Transmit(&hspi2, (uint8_t*)LCD_SPI_buffer, 57600, 1000);
-		v_count = 0;
-	}
-	*/
 }
+
+void ILI9488_DrawBitmap(uint16_t w, uint16_t h, uint8_t *buff)
+{
+    // تعریف یک آرایه برای داده‌های RGB
+    uint32_t totalPixels = w * h;
+    uint8_t *DMA_Buffer = new uint8_t[totalPixels * 3];  // 3 بایت برای هر پیکسل (RGB)
+
+    uint32_t DMA_index = 0;
+    uint16_t LCD_SPIcolor;
+
+    // آماده‌سازی داده‌ها در آرایه DMA_Buffer
+    for (int i = 0; i < totalPixels; i++)
+    {
+        // دریافت رنگ پیکسل از بافر
+        LCD_SPIcolor = buff[i * 2 + 1] << 8 | buff[i * 2];
+
+        // تبدیل رنگ 16 بیتی به سه رنگ RGB 8 بیتی
+        DMA_Buffer[DMA_index++] = ((LCD_SPIcolor >> 8) & 0xF8);  // RED
+        DMA_Buffer[DMA_index++] = ((LCD_SPIcolor >> 3) & 0xFC);  // GREEN
+        DMA_Buffer[DMA_index++] = (LCD_SPIcolor << 3);            // BLUE
+    }
+
+    // فعال کردن SPI و ارسال داده‌ها با استفاده از DMA
+    LCD_CS_CLR;
+    LCD_RS_SET;
+    HAL_SPI_Transmit_DMA(&hspi2, DMA_Buffer, totalPixels * 3);
+
+    // منتظر ماندن تا انتقال تمام داده‌ها به پایان برسد
+    while (HAL_SPI_GetState(&hspi2) != HAL_SPI_STATE_READY);
+
+    LCD_CS_SET;
+
+    // آزادسازی حافظه تخصیص یافته
+    delete[] DMA_Buffer;
+}
+
 
 
 

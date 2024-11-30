@@ -143,3 +143,146 @@ extern "C" {
 #endif
 
 #endif /* INC_ILI9341_H_ */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#pragma once
+
+#include "main.h"
+#include "cmsis_os.h"
+
+enum class LCD_Horizontal_t {
+    ROTATE_0,
+    ROTATE_90,
+    ROTATE_180,
+    ROTATE_270
+};
+
+class ILI9488 {
+private:
+    static constexpr size_t BufferSize = 28803;
+    uint8_t LCD_SPI_buffer[BufferSize];
+    SPI_HandleTypeDef* hspi;
+
+    const GPIO_TypeDef* const GPIO_RST_Port;
+    const uint16_t GPIO_RST_Pin;
+    const GPIO_TypeDef* const GPIO_CS_Port;
+    const uint16_t GPIO_CS_Pin;
+    const GPIO_TypeDef* const GPIO_RS_Port;
+    const uint16_t GPIO_RS_Pin;
+    const GPIO_TypeDef* const GPIO_LED_Port;
+    const uint16_t GPIO_LED_Pin;
+
+    inline void gpioWrite(GPIO_TypeDef* port, uint16_t pin, GPIO_PinState state) {
+        HAL_GPIO_WritePin(port, pin, state);
+    }
+
+    static void Error_Handler() {
+        // Handle error in a more sophisticated way, possibly reset the MCU or log the error
+        while (true);
+    }
+
+    void write(uint8_t data, bool isCommand) {
+        gpioWrite(isCommand ? GPIO_RS_Port : GPIO_RS_Port, isCommand ? GPIO_RS_Pin : GPIO_RS_Pin, isCommand ? GPIO_PIN_RESET : GPIO_PIN_SET);
+        gpioWrite(GPIO_CS_Port, GPIO_CS_Pin, GPIO_PIN_RESET);
+        if (HAL_SPI_Transmit(hspi, &data, 1, 1000) != HAL_OK) {
+            Error_Handler();
+        }
+        gpioWrite(GPIO_CS_Port, GPIO_CS_Pin, GPIO_PIN_SET);
+    }
+
+    void lcdReset() {
+        gpioWrite(GPIO_RST_Port, GPIO_RST_Pin, GPIO_PIN_RESET);
+        osDelay(100);
+        gpioWrite(GPIO_RST_Port, GPIO_RST_Pin, GPIO_PIN_SET);
+        osDelay(50);
+    }
+
+    void lcdDirection(LCD_Horizontal_t direction) {
+        write(0x36, true);
+        switch (direction) {
+        case LCD_Horizontal_t::ROTATE_0: write(0x08, false); break;
+        case LCD_Horizontal_t::ROTATE_90: write(0x68, false); break;
+        case LCD_Horizontal_t::ROTATE_180: write(0xC8, false); break;
+        case LCD_Horizontal_t::ROTATE_270: write(0xA8, false); break;
+        }
+    }
+
+public:
+    ILI9488(SPI_HandleTypeDef* hspi,
+            const GPIO_TypeDef* GPIO_RST_Port, uint16_t GPIO_RST_Pin,
+            const GPIO_TypeDef* GPIO_CS_Port, uint16_t GPIO_CS_Pin,
+            const GPIO_TypeDef* GPIO_RS_Port, uint16_t GPIO_RS_Pin,
+            const GPIO_TypeDef* GPIO_LED_Port, uint16_t GPIO_LED_Pin)
+        : hspi(hspi), GPIO_RST_Port(GPIO_RST_Port), GPIO_RST_Pin(GPIO_RST_Pin),
+          GPIO_CS_Port(GPIO_CS_Port), GPIO_CS_Pin(GPIO_CS_Pin),
+          GPIO_RS_Port(GPIO_RS_Port), GPIO_RS_Pin(GPIO_RS_Pin),
+          GPIO_LED_Port(GPIO_LED_Port), GPIO_LED_Pin(GPIO_LED_Pin) {
+        gpioWrite(GPIO_LED_Port, GPIO_LED_Pin, GPIO_PIN_SET);
+    }
+
+    void init() {
+        lcdReset();
+        write(0xF7, true);
+        write(0xA9, false); write(0x51, false); write(0x2C, false); write(0x82, false);
+        write(0xC0, true); write(0x11, false); write(0x09, false);
+        write(0xC1, true); write(0x41, false);
+        osDelay(120);
+        write(0x29, true);
+        lcdDirection(LCD_Horizontal_t::ROTATE_90);
+    }
+
+    void setWindow(uint16_t startX, uint16_t startY, uint16_t endX, uint16_t endY) {
+        write(0x2A, true);
+        write(startX >> 8, false); write(startX & 0xFF, false);
+        write(endX >> 8, false); write(endX & 0xFF, false);
+        write(0x2B, true);
+        write(startY >> 8, false); write(startY & 0xFF, false);
+        write(endY >> 8, false); write(endY & 0xFF, false);
+        write(0x2C, true);
+    }
+
+    void writePixel(uint16_t x, uint16_t y, uint16_t color) {
+        setWindow(x, y, x, y);
+        write(color >> 8, false);
+        write(color & 0xFF, false);
+    }
+
+    void drawBitmap(uint16_t width, uint16_t height, uint8_t* buffer) {
+        setWindow(0, 0, width - 1, height - 1);
+        gpioWrite(GPIO_CS_Port, GPIO_CS_Pin, GPIO_PIN_RESET);
+        gpioWrite(GPIO_RS_Port, GPIO_RS_Pin, GPIO_PIN_SET);
+
+        uint32_t bufferIndex = 0;
+        uint32_t spiBufferIndex = 0;
+        for (uint32_t i = 0; i < width * height; i++) {
+            uint16_t color = (buffer[bufferIndex + 1] << 8) | buffer[bufferIndex];
+            bufferIndex += 2;
+            LCD_SPI_buffer[spiBufferIndex++] = (color >> 8) & 0xF8;  // Red
+            LCD_SPI_buffer[spiBufferIndex++] = (color >> 3) & 0xFC;  // Green
+            LCD_SPI_buffer[spiBufferIndex++] = (color << 3);         // Blue
+        }
+        HAL_SPI_Transmit_DMA(hspi, LCD_SPI_buffer, width * height * 3);
+    }
+
+    void endDraw() {
+        gpioWrite(GPIO_CS_Port, GPIO_CS_Pin, GPIO_PIN_SET);
+    }
+};
+
