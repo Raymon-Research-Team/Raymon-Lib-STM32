@@ -38,12 +38,13 @@ public:
 
     void handle()
     {
-        if (!_BuzzerEN)
+        if (!_BuzzerEN || _BlinkCount==0)
         {
             // خاموش کردن پین بر اساس مقدار invertLogic
             HAL_GPIO_WritePin(_BuzzerPort, _BuzzerPin, _invertLogic ? GPIO_PIN_SET : GPIO_PIN_RESET);
             return;
         }
+
 
         if (_counterTon < _Ton)
         {
@@ -57,7 +58,7 @@ public:
             // خاموش کردن پین بر اساس مقدار invertLogic
             HAL_GPIO_WritePin(_BuzzerPort, _BuzzerPin, _invertLogic ? GPIO_PIN_SET : GPIO_PIN_RESET);
         }
-        else if (_counterBlink < _BlinkCount)
+        else if (_counterBlink+1 < _BlinkCount)
         {
             _counterBlink++;
             _counterTon = 0;
