@@ -1,4 +1,9 @@
+<<<<<<< Updated upstream
 # PrintfUart Library
+=======
+printf and scanf and getchar() for STM32-Uart.
+C library type: Newlib-nano with floating point support in printf() and scanf();
+>>>>>>> Stashed changes
 
 ## Overview
 

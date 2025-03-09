@@ -1,0 +1,1 @@
+ren main.c main.cpp
