@@ -1,0 +1,241 @@
+#pragma once
+#include "stm32f1xx_hal.h" 
+#include <iostream>
+#include <string.h>
+
+class doBT_01
+{
+  public:
+	//------------------------------------------------------------------------------
+	// Constructor with USART handle
+	doBT_01(UART_HandleTypeDef *huart)
+		: huart(huart), baudRate(115200), bleEnabled(true), sppEnabled(true),
+		  ledAlternate(false), powerOnLOGEnabled(true), transmissionPower(9)
+	{
+		strcpy(serviceUUID, "FFF0");
+		strcpy(characteristicUUIDs[0], "FFF1");
+		strcpy(characteristicUUIDs[1], "FFF2");
+		strcpy(characteristicUUIDs[2], "FFF3");
+	}
+	//------------------------------------------------------------------------------
+	// Query baud rate
+	bool queryBaudRate(char *response, uint16_t responseSize)
+	{
+		return sendATCommand("AT+QT", response, responseSize);
+	}
+	//------------------------------------------------------------------------------
+	// Set baud rate
+	bool setBaudRate(int baudRate)
+	{
+		char command[20];
+		uint8_t code = baudRateToCode(baudRate);
+		if (code == 0)
+			return false; // Invalid baud rate
+		snprintf(command, sizeof(command), "AT+CT%02d", code);
+		char response[10];
+		return sendATCommand(command, response, sizeof(response)) && strcmp(response, "OK") == 0;
+	}
+	//------------------------------------------------------------------------------
+	// Reset module
+	bool resetModule()
+	{
+		char response[10];
+		return sendATCommand("AT+CZ", response, sizeof(response)) && strcmp(response, "OK") == 0;
+	}
+	//------------------------------------------------------------------------------
+	// Query BLE name
+	bool queryBLEName(char *response, uint16_t responseSize)
+	{
+		return sendATCommand("AT+TM", response, responseSize);
+	}
+	//------------------------------------------------------------------------------
+	// Set BLE name
+	bool setBLEName(const char *name)
+	{
+		char command[50];
+		snprintf(command, sizeof(command), "AT+BM%s", name);
+		char response[10];
+		return sendATCommand(command, response, sizeof(response)) && strcmp(response, "OK") == 0;
+	}
+	//------------------------------------------------------------------------------
+	// Query SPP name
+	bool querySPPName(char *response, uint16_t responseSize)
+	{
+		return sendATCommand("AT+TD", response, responseSize);
+	}
+	//------------------------------------------------------------------------------
+	// Set SPP name
+	bool setSPPName(const char *name)
+	{
+		char command[50];
+		snprintf(command, sizeof(command), "AT+BD%s", name);
+		char response[10];
+		return sendATCommand(command, response, sizeof(response)) && strcmp(response, "OK") == 0;
+	}
+	//------------------------------------------------------------------------------
+	// Query BLE MAC address
+	bool queryBLEMACAddress(char *response, uint16_t responseSize)
+	{
+		return sendATCommand("AT+TN", response, responseSize);
+	}
+	//------------------------------------------------------------------------------
+	// Set BLE MAC address
+	bool setBLEMACAddress(const char *macAddress)
+	{
+		char command[50];
+		snprintf(command, sizeof(command), "AT+BN%s", macAddress);
+		char response[10];
+		return sendATCommand(command, response, sizeof(response)) && strcmp(response, "OK") == 0;
+	}
+	//------------------------------------------------------------------------------
+	// Enable/disable BLE
+	bool setBLEEnable(bool enable)
+	{
+		char command[20];
+		snprintf(command, sizeof(command), "AT+B4%02d", enable ? 1 : 0);
+		char response[10];
+		return sendATCommand(command, response, sizeof(response)) && strcmp(response, "OK") == 0;
+	}
+	//------------------------------------------------------------------------------
+	// Enable/disable SPP
+	bool setSPPEnable(bool enable)
+	{
+		char command[20];
+		snprintf(command, sizeof(command), "AT+B5%02d", enable ? 1 : 0);
+		char response[10];
+		return sendATCommand(command, response, sizeof(response)) && strcmp(response, "OK") == 0;
+	}
+	//------------------------------------------------------------------------------
+	// Restore factory settings
+	bool restoreFactorySettings()
+	{
+		char response[10];
+		return sendATCommand("AT+CW", response, sizeof(response)) && strcmp(response, "OK") == 0;
+	}
+	//------------------------------------------------------------------------------
+	// Set LED connection status
+	bool setLEDConnectionStatus(bool alternate)
+	{
+		char command[20];
+		snprintf(command, sizeof(command), "AT+CF%02d", alternate ? 1 : 0);
+		char response[10];
+		return sendATCommand(command, response, sizeof(response)) && strcmp(response, "OK") == 0;
+	}
+	//------------------------------------------------------------------------------
+	// Enable/disable chip power-on LOG information
+	bool setPowerOnLOG(bool enable)
+	{
+		char command[20];
+		snprintf(command, sizeof(command), "AT+CR%02d", enable ? 1 : 0);
+		char response[10];
+		return sendATCommand(command, response, sizeof(response)) && strcmp(response, "OK") == 0;
+	}
+	//------------------------------------------------------------------------------
+	// Set transmission power
+	bool setTransmissionPower(int powerLevel)
+	{
+		if (powerLevel < 0 || powerLevel > 9)
+			return false;
+		char command[20];
+		snprintf(command, sizeof(command), "AT+BR%02d", powerLevel);
+		char response[10];
+		return sendATCommand(command, response, sizeof(response)) && strcmp(response, "OK") == 0;
+	}
+	//------------------------------------------------------------------------------
+	// Modify BLE UUID
+	bool setServiceUUID(const char *uuid)
+	{
+		char command[50];
+		snprintf(command, sizeof(command), "AT+U0F%s", uuid);
+		char response[10];
+		return sendATCommand(command, response, sizeof(response)) && strcmp(response, "OK") == 0;
+	}
+	//------------------------------------------------------------------------------
+	bool setCharacteristicUUID(int characteristicNumber, const char *uuid)
+	{
+		if (characteristicNumber < 1 || characteristicNumber > 3)
+			return false;
+		char command[50];
+		snprintf(command, sizeof(command), "AT+U0F%d%s", characteristicNumber, uuid);
+		char response[10];
+		return sendATCommand(command, response, sizeof(response)) && strcmp(response, "OK") == 0;
+	}
+	//------------------------------------------------------------------------------
+  private:
+	//------------------------------------------------------------------------------
+	// Helper function to send AT command and get response
+	bool sendATCommand(const char *command, char *response, uint16_t responseSize)
+	{
+		// Send command via USART
+		HAL_UART_Transmit(huart, (uint8_t *)command, strlen(command), HAL_MAX_DELAY);
+
+		// Receive response (assuming response ends with \r\n)
+		uint8_t buffer[100];
+		uint16_t index = 0;
+		while (index < sizeof(buffer) - 1)
+		{
+			HAL_UART_Receive(huart, &buffer[index], 1, HAL_MAX_DELAY);
+			if (buffer[index] == '\n')
+			{
+				buffer[index] = '\0'; // Null-terminate the response
+				break;
+			}
+			index++;
+		}
+
+		// Copy response to output buffer
+		strncpy(response, (char *)buffer, responseSize - 1);
+		response[responseSize - 1] = '\0'; // Ensure null-termination
+		return true;
+	}
+	//------------------------------------------------------------------------------
+	// Convert baud rate to code
+	uint8_t baudRateToCode(int baudRate)
+	{
+		switch (baudRate)
+		{
+		case 9600:
+			return 1;
+		case 19200:
+			return 2;
+		case 38400:
+			return 3;
+		case 57600:
+			return 4;
+		case 115200:
+			return 5;
+		case 256000:
+			return 6;
+		case 512000:
+			return 7;
+		case 230400:
+			return 8;
+		case 460800:
+			return 9;
+		case 1000000:
+			return 10;
+		case 31250:
+			return 11;
+		case 2400:
+			return 12;
+		case 4800:
+			return 13;
+		default:
+			return 0; // Invalid baud rate
+		}
+	}
+	//------------------------------------------------------------------------------
+	// USART handle
+	UART_HandleTypeDef *huart;
+	//------------------------------------------------------------------------------
+	// Current settings
+	int baudRate;
+	bool bleEnabled;
+	bool sppEnabled;
+	bool ledAlternate;
+	bool powerOnLOGEnabled;
+	int transmissionPower;
+	char serviceUUID[10];
+	char characteristicUUIDs[3][10];
+	//------------------------------------------------------------------------------
+};
