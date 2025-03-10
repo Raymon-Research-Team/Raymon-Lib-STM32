@@ -1,7 +1,7 @@
 #pragma once
 #include <cstdint>
 #include <cstring>
-#include "QCRC.h"
+#include "QCRC.hpp"
 
 /*
 ========================================================

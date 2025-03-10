@@ -1,6 +1,6 @@
 #pragma once
-#include "QBuffer.h"
-#include "QCRC.h"
+#include "QBuffer.hpp"
+#include "QCRC.hpp"
 
 /*
 ========================================================
