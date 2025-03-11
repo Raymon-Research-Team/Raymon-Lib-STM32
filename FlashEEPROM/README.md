@@ -59,17 +59,17 @@ static bool readString(uint32_t address, char *buffer, uint16_t bufferSize);
 ## مثال استفاده
 
 ```cpp
-FlashEEPROM::writeByte(0, 0x55);  // نوشتن یک بایت در آدرس مشخص
-uint8_t byteData = FlashEEPROM::readByte(0x0801FC00);  // خواندن یک بایت از فلش
+FlashEEPROM::writeByte(0x00, 0x55);  // نوشتن یک بایت در آدرس مشخص
+uint8_t byteData = FlashEEPROM::readByte(0x00);  // خواندن یک بایت از فلش
 
 uint32_t value = 123456;
-FlashEEPROM::writeUInt32(1, value);  // نوشتن یک عدد ۴ بایتی
-uint32_t readValue = FlashEEPROM::readUInt32(0x0801FC04);  // خواندن یک عدد ۴ بایتی
+FlashEEPROM::writeUInt32(0x01, value);  // نوشتن یک عدد ۴ بایتی
+uint32_t readValue = FlashEEPROM::readUInt32(0x01);  // خواندن یک عدد ۴ بایتی
 
 const char* text = "Hello, Flash!";
-FlashEEPROM::writeString(100, text);  // نوشتن رشته به فلش
+FlashEEPROM::writeString(0x0100, text);  // نوشتن رشته به فلش
 char buffer[50];
-FlashEEPROM::readString(500, buffer, sizeof(buffer));  // خواندن رشته از فلش
+FlashEEPROM::readString(0x0500, buffer, sizeof(buffer));  // خواندن رشته از فلش
 ```
 
 ## توضیحات بیشتر
