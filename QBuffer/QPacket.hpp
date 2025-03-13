@@ -28,7 +28,7 @@ private:
 
 public:
     // تابع ساخت بسته
-    static uint8_t Create(const uint8_t* inputData, uint16_t inputSize, uint8_t* outputData, uint16_t& outputSize) {
+    static uint8_t Create(const uint8_t* inputData, uint16_t inputSize, uint8_t* outputData, uint16_t outputSize) {
         // بررسی ورودی‌ها و تعیین طول نهایی بسته
         if (inputSize < 1 || inputSize > Max_inputSize || outputData == nullptr) {
             return 0;
