@@ -6,7 +6,7 @@
 class doBT_01
 {
   public:
-	string inputBuffer;
+	std::string inputBuffer;
 	//===============================================================================
 	// Constructor with USART handle
 	doBT_01(UART_HandleTypeDef *huart)
@@ -42,6 +42,7 @@ class doBT_01
 	{
 		char response[50];
 		return sendATCommand("AT+CZ\r\n", response, sizeof(response)) && strstr(response, "OK");
+    	HAL_Delay(200);
 	}
 	//===============================================================================
 	// Query BLE name
@@ -83,10 +84,38 @@ class doBT_01
 	// Set BLE MAC address
 	bool setBLEMACAddress(const char *macAddress)
 	{
-		char command[50];
-		snprintf(command, sizeof(command), "AT+BN%s\r\n", macAddress);
-		char response[50];
-		return sendATCommand(command, response, sizeof(response)) && strstr(response, "OK");
+    	// تبدیل MAC آدرس به فرمت معکوس
+    	char reversedMAC[13];
+    	snprintf(reversedMAC,
+        	sizeof(reversedMAC),
+        	"%c%c%c%c%c%c%c%c%c%c%c%c",
+        	macAddress[10],
+        	macAddress[11],
+        	macAddress[8],
+        	macAddress[9],
+        	macAddress[6],
+        	macAddress[7],
+        	macAddress[4],
+        	macAddress[5],
+        	macAddress[2],
+        	macAddress[3],
+        	macAddress[0],
+        	macAddress[1]);
+    
+    	// کاهش مقدار هگز دو رقم آخر (AB)
+    	char hexValue[3] = { reversedMAC[10], reversedMAC[11], '\0' };
+    	int intValue = (int)strtol(hexValue, NULL, 16);
+    	intValue = (intValue - 1) & 0xFF; // کم کردن یک مقدار و اطمینان از مقدار 8 بیتی
+    	snprintf(hexValue, sizeof(hexValue), "%02X", intValue);
+    	reversedMAC[10] = hexValue[0];
+    	reversedMAC[11] = hexValue[1];
+    
+    	char command[19];
+    	snprintf(command, sizeof(command), "AT+BN%s", reversedMAC);
+    	command[17] = '\r';
+    	command[18] = '\n';
+    	char response[50];
+    	return sendATCommand(command, response, sizeof(response)) && strstr(response, "OK");
 	}
 	//===============================================================================
 	// Enable/disable BLE
@@ -180,7 +209,7 @@ class doBT_01
 
 		// Receive response (assuming response ends with \r\n)
 		uint8_t buffer[50];
-		HAL_UART_Receive(huart, buffer, 50, 100);
+		HAL_UART_Receive(huart, buffer, 50, 200);
 
 		// Copy response to output buffer
 		strncpy(response, (char *)buffer, responseSize - 1);
