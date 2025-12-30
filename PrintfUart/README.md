@@ -3,6 +3,9 @@
 =======
 printf and scanf and getchar() for STM32-Uart.
 C library type: Newlib-nano with floating point support in printf() and scanf();
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 
 ## Overview
