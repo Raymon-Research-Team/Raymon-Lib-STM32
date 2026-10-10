@@ -22,15 +22,19 @@ Raymon-Lib-STM32 is a collection of embedded C/C++ utilities, peripheral example
 
 | Component | Purpose | Requirements / notes |
 |---|---|---|
-| [QBuffer](QBuffer/QBuffer.hpp) | Fixed-capacity byte buffer | Header-only; review ownership/copy semantics |
+| [QBuffer](QBuffer/README.md) | Fixed-capacity byte buffer, packet framing, CRC and command parsing | Header-only C++; review API and buffer limits |
 | [QPacket](QBuffer/QPacket.hpp) | Packet framing with markers, length, counter and CRC | Uses [QCRC](QBuffer/QCRC.hpp); inspect QCommand too |
 | [FlashEEPROM](FlashEEPROM/README.md) | Store and restore a structure in internal flash | STM32 HAL and project main.h; target flash layout must be checked |
 | [PrintfUart](PrintfUart/README.md) | Formatted UART input/output | STM32 HAL and project main.h |
 | [Servo Motor SG90](ServoMotor%20SG90/Readme.md) | PWM-based servo example | Existing guide uses STM32F1/TIM2 as its example |
 | [FFT for STM32H743](FFT%28STM32H743VITx%29/README.md) | FFT example using CMSIS-DSP | Compatible CMSIS-DSP and target configuration |
-| [Bootloader jump](BOOTLOADER/jump_to_bootloader.c) | MCU-specific bootloader jump | Verify exact MCU and memory map |
+| [Bootloader jump](BOOTLOADER/README.md) | MCU-specific bootloader jump | Verify exact MCU and memory map; potentially unsafe |
 | [Lock program in code](Lock_program_in_code/README.md) | Read-protection / firmware-locking notes | Potentially destructive; review before use |
-| [Bluetooth example](Bluetooth%28doBT_01%29/doBT_01.hpp) | Module-specific Bluetooth code | Hardware and protocol dependent |
+| [Bluetooth example](Bluetooth%28doBT_01%29/README.md) | Module-specific Bluetooth code | Hardware and protocol dependent |
+| [PW05 Bluetooth](Bluetooth%28PW05%29/README.md) | UART-based Bluetooth module control | Firmware, AT commands and GPIO wiring dependent |
+| [ILI9488 TFT](LCD_ILI9488/README.md) | SPI TFT display and drawing APIs | Multiple conflicting variants; select and validate one only |
+| [cUart](cUart/README.md) | C++ streams backed by UART | Current input adapter has a pointer-lifetime bug; read limitations before use |
+| [C/C++ rename helpers](000_New_File_C%2B%2B/README.md) | Rename main.c / main.cpp | Renames only; does not convert source code |
 
 This catalogue is based on files currently present in the repository. It does not claim that every component has been compiled or hardware-validated.
 
