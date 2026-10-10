@@ -14,6 +14,14 @@
 #error "FlashEEPROM supports STM32F1 only; implement and validate a family-specific backend for this MCU."
 #endif
 
+#ifndef PAGE_SIZE
+#ifdef FLASH_PAGE_SIZE
+#define PAGE_SIZE FLASH_PAGE_SIZE
+#else
+#error "Define PAGE_SIZE to the exact erase-page size for the selected STM32F1 part."
+#endif
+#endif
+
 class FlashEEPROM {
 public:
     FlashEEPROM(void* structPtr, size_t size, uint32_t reservedFlashStartAddress)
