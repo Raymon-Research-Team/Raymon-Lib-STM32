@@ -38,3 +38,15 @@ External libraries, generated files, and third-party snippets remain subject to 
 - [ ] Preserve upstream copyright and license notices.
 - [ ] Confirm that each file can be distributed under the repository's declared terms.
 - [ ] Obtain legal review for commercial distribution if ownership or compatibility is uncertain.
+
+## Commercial Licensing
+
+Raymon-Lib-STM32 is distributed under the Business Source License 1.1 (BUSL-1.1), subject to the parameters in the repository's `LICENSE` file.
+
+The repository's default license does not automatically grant every form of commercial production use before the applicable Change Date. If your intended use is not permitted by the applicable license terms, contact the rights holder to discuss a separate commercial license.
+
+A separate commercial agreement must identify the licensed product or use case, the rights granted, applicable fees (if any), duration, and any distribution or support conditions. No additional rights are granted unless agreed to in writing by an authorized rights holder.
+
+Third-party dependencies may be subject to separate license terms. Users are responsible for reviewing and complying with the applicable terms for those components.
+
+For licensing inquiries, contact: rahman.h22@gmail.com.
