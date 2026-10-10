@@ -50,9 +50,14 @@ private:
 
         uint16_t received = 0U;
         bool receivedAny = false;
+        const uint32_t receiveStart = HAL_GetTick();
         while (received < responseSize - 1U) {
+            const uint32_t elapsed = HAL_GetTick() - receiveStart;
+            if (elapsed >= timeout) break;
+            const uint32_t remainingTimeout = timeout - elapsed;
             uint8_t byte = 0U;
-            const HAL_StatusTypeDef rxStatus = HAL_UART_Receive(huart, &byte, 1U, timeout);
+            const HAL_StatusTypeDef rxStatus = HAL_UART_Receive(
+                huart, &byte, 1U, remainingTimeout);
             if (rxStatus != HAL_OK) break;
             receivedAny = true;
             response[received++] = static_cast<char>(byte);
