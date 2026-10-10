@@ -41,6 +41,7 @@ public:
 
     // تابع ارسال داده به 74HC595
     void write(const uint8_t* Data) {
+        if (Data == nullptr || _numberOfIC == 0U) return;
         HAL_GPIO_WritePin(_mrPort, _mrPin, GPIO_PIN_RESET);
         delayms(1);
         HAL_GPIO_WritePin(_mrPort, _mrPin, GPIO_PIN_SET);
