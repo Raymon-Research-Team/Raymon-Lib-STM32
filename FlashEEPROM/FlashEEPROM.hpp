@@ -32,7 +32,8 @@ public:
         const uint32_t totalPages = static_cast<uint32_t>((structSize + PAGE_SIZE - 1U) / PAGE_SIZE);
         const uint32_t roundedSize = totalPages * PAGE_SIZE;
         const uint32_t flashEnd = GetFlashEndExclusive();
-        if (flashStartAddress > flashEnd || roundedSize > flashEnd - flashStartAddress) return false;
+        if (flashStartAddress < FLASH_BASE || flashStartAddress > flashEnd ||
+            roundedSize > flashEnd - flashStartAddress) return false;
 
         if (HAL_FLASH_Unlock() != HAL_OK) return false;
         bool success = false;
@@ -67,7 +68,8 @@ public:
     bool TryReadStruct() {
         if (!IsConfigurationValid()) return false;
         const uint32_t flashEnd = GetFlashEndExclusive();
-        if (flashStartAddress > flashEnd || structSize > flashEnd - flashStartAddress) return false;
+        if (flashStartAddress < FLASH_BASE || flashStartAddress > flashEnd ||
+            structSize > flashEnd - flashStartAddress) return false;
         std::memcpy(userStruct, reinterpret_cast<const void*>(flashStartAddress), structSize);
         return true;
     }
