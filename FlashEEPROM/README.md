@@ -1,78 +1,37 @@
+# FlashEEPROM — STM32F1 only
 
-# استفاده از کلاس FlashEEPROM برای ذخیره‌سازی داده در فلش
+This component stores and restores a structure in internal flash using the STM32F1 HAL.
 
-این کلاس به شما امکان می‌دهد که داده‌ها را در حافظه فلش میکروکنترلر ذخیره و خوانده و مدیریت کنید. این حافظه برای ذخیره داده‌های غیر فرار (مانند تنظیمات و اطلاعات دائم) مناسب است.
+## Important safety constraints
 
-## ویژگی‌ها
+- This implementation intentionally fails compilation for non-STM32F1 targets. F4, L4, G4, and H7 have different erase/program APIs and must use separate validated backends.
+- The caller must reserve the entire flash region in the linker script. The library cannot detect whether the application image, bootloader, calibration values, or other data already occupies that region.
+- The constructor requires an explicit reserved flash start address. Do not guess the address from a nominal flash capacity.
+- The start address must be aligned to the exact page size and 32-bit programming alignment.
+- Define `PAGE_SIZE` to the actual erase-page size for the selected part if the HAL does not define `FLASH_PAGE_SIZE`.
+- Every write erases all pages occupied by the structure before programming. It is not wear-levelled and does not provide power-fail atomicity; power loss during write can destroy the stored record.
+- Validate the MCU reference manual, linker map, option bytes, and bootloader layout before enabling writes on real hardware.
 
-- **نوشتن یک بایت**: امکان نوشتن یک بایت داده در آدرس دلخواه.
-- **خواندن یک بایت**: امکان خواندن یک بایت داده از آدرس دلخواه.
-- **نوشتن یک عدد ۴ بایتی**: امکان ذخیره یک عدد ۴ بایتی (uint32_t) در فلش.
-- **خواندن یک عدد ۴ بایتی**: امکان خواندن یک عدد ۴ بایتی از فلش.
-- **نوشتن رشته (متن)**: امکان ذخیره رشته‌های متنی در فلش.
-- **خواندن رشته (متن)**: امکان خواندن رشته‌های متنی از فلش.
-
-## متغیرهای مهم
-
-- `FLASH_BASE_ADDR`: آدرس شروع اولین صفحه فلش (باید بر اساس MCU تنظیم شود).
-- `FLASH_END_ADDR`: آدرس آخرین صفحه فلش (باید بر اساس MCU تنظیم شود).
-
-## توابع
-
-### نوشتن یک بایت در فلش
-```cpp
-static bool writeByte(uint32_t address, uint8_t value);
-```
-
-### خواندن یک بایت از فلش
-```cpp
-static uint8_t readByte(uint32_t address);
-```
-
-### نوشتن یک عدد ۴ بایتی
-```cpp
-static bool writeUInt32(uint32_t address, uint32_t value);
-```
-
-### خواندن یک عدد ۴ بایتی
-```cpp
-static uint32_t readUInt32(uint32_t address);
-```
-
-### نوشتن رشته (متن)
-```cpp
-static bool writeString(uint32_t address, const char *str);
-```
-
-### خواندن رشته (متن)
-```cpp
-static bool readString(uint32_t address, char *buffer, uint16_t bufferSize);
-```
-
-## توابع کمکی
-
-- `unlockFlash`: برای باز کردن دسترسی به فلش جهت نوشتن.
-- `lockFlash`: برای قفل کردن دسترسی به فلش بعد از نوشتن.
-- `erasePage`: برای پاک کردن یک صفحه فلش.
-- `findNextFreeAddress`: برای پیدا کردن اولین فضای خالی در فلش.
-
-## مثال استفاده
+## API
 
 ```cpp
-FlashEEPROM::writeByte(0x00, 0x55);  // نوشتن یک بایت در آدرس مشخص
-uint8_t byteData = FlashEEPROM::readByte(0x00);  // خواندن یک بایت از فلش
+MySettings settings{};
+FlashEEPROM storage(&settings, sizeof(settings), RESERVED_FLASH_START);
 
-uint32_t value = 123456;
-FlashEEPROM::writeUInt32(0x01, value);  // نوشتن یک عدد ۴ بایتی
-uint32_t readValue = FlashEEPROM::readUInt32(0x01);  // خواندن یک عدد ۴ بایتی
+// Prefer checked APIs so failures are not silently ignored.
+if (!storage.TryWriteStruct()) {
+    // Handle flash erase/program failure.
+}
 
-const char* text = "Hello, Flash!";
-FlashEEPROM::writeString(0x0100, text);  // نوشتن رشته به فلش
-char buffer[50];
-FlashEEPROM::readString(0x0500, buffer, sizeof(buffer));  // خواندن رشته از فلش
+if (!storage.TryReadStruct()) {
+    // Handle invalid configuration or address.
+}
 ```
 
-## توضیحات بیشتر
+The legacy `WriteStruct()` and `ReadStruct()` wrappers remain available but discard the status result. Prefer `TryWriteStruct()` and `TryReadStruct()`.
 
-- این کلاس به شما اجازه می‌دهد که از حافظه فلش برای ذخیره داده‌های مختلف استفاده کنید. می‌توانید داده‌ها را در فلش بنویسید، بخوانید و همچنین فضای خالی در فلش پیدا کنید.
-- در صورتی که نیاز به پاک کردن صفحه‌های فلش یا نوشتن داده‌ها در صفحات مختلف دارید، این کلاس این قابلیت‌ها را نیز ارائه می‌دهد.
+## Limitations
+
+- Structure layout and compiler/firmware version changes are not automatically migrated.
+- No CRC, version field, wear levelling, dual-slot recovery, or atomic commit is implemented.
+- Do not use for frequent writes or safety-critical settings without adding a versioned record format and power-failure recovery.
