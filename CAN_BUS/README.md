@@ -193,3 +193,23 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
 
 
 نکته: اطمینان حاصل کنید که در وقفه stm32xx_it.c تابع HAL_CAN_RxFifo0MsgPendingCallback فراخوانی می‌شود.
+
+---
+
+## Safety and integration notes
+
+- `SendMessage()` returns `0` on success, `1` for invalid input/unconfigured peripheral, `2` for TX queue/mailbox timeout, and `3` for a HAL transmit error. The class queues frames; this does not prove that a remote node acknowledged or processed them.
+- This API splits payloads longer than 8 bytes into multiple classic-CAN frames. It does **not** add packet framing, sequence numbers, or end-to-end reassembly; add an application protocol if required.
+- The standard-ID filter is limited to 11-bit IDs. Review filter-bank allocation and `SlaveStartFilterBank` against the exact MCU and any other CAN users in the project.
+- `Qbuffer_CAN_push()` is an application-provided byte-queue hook. Define it in the project and ensure it is safe to call from interrupt context; keep the callback short and non-blocking.
+- FDCAN implementation in this repository intentionally uses classic CAN frames with up to 8 payload bytes. It does not implement CAN FD payloads up to 64 bytes.
+- Initialize the HAL peripheral and timing/bit-rate settings in CubeMX before constructing the class. Hardware behavior has not been validated across all STM32 targets.
+
+## یادداشت‌های ایمنی و یکپارچه‌سازی
+
+- مقدار بازگشتی `SendMessage()`: صفر یعنی موفقیت؛ ۱ یعنی ورودی نامعتبر یا راه‌اندازی‌نشدن محیط؛ ۲ یعنی پایان مهلت صف/میل‌باکس ارسال؛ و ۳ یعنی خطای ارسال HAL. قرارگرفتن پیام در صف به معنی دریافت یا پردازش آن توسط گره مقصد نیست.
+- داده‌های بیش از ۸ بایت به چند فریم CAN کلاسیک تقسیم می‌شوند؛ این کلاس به‌تنهایی شماره‌گذاری، قاب‌بندی یا بازسازی پیام در سمت گیرنده را انجام نمی‌دهد.
+- فیلتر شناسهٔ استاندارد ۱۱ بیتی است. شمارهٔ بانک فیلتر و `SlaveStartFilterBank` را با مدل دقیق MCU و سایر استفاده‌کنندگان CAN تطبیق دهید.
+- تابع `Qbuffer_CAN_push()` باید توسط برنامهٔ میزبان تعریف شود و در صورت فراخوانی از وقفه، کوتاه و غیرمسدودکننده باشد.
+- پیاده‌سازی FDCAN فعلی فقط فریم‌های CAN کلاسیک با حداکثر ۸ بایت داده را پشتیبانی می‌کند؛ پشتیبانی از payload شصت‌وچهار بایتی CAN FD پیاده‌سازی نشده است.
+- پیکربندی HAL، نرخ بیت و وقفه‌ها باید در CubeMX انجام شود. رفتار سخت‌افزاری همهٔ خانواده‌های STM32 آزمایش نشده است.
