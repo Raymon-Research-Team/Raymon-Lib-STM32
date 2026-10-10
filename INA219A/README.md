@@ -1,39 +1,21 @@
-# INA219
+# INA219 — STM32 I2C driver
 
-INA219 یک ماژول سنجش جریان، ولتاژ و توان با دقت بالا است که توسط شرکت Texas Instruments تولید شده است. این ماژول به ویژه برای اندازه‌گیری جریان و ولتاژ DC در مدارها کاربرد دارد و می‌تواند اطلاعات توان مصرفی را نیز محاسبه کند. ویژگی اصلی آن این است که از طریق پروتکل I2C با میکروکنترلرها (مثل STM32، Arduino و ...) ارتباط برقرار می‌کند.
+This component is a minimal register-level driver for the Texas Instruments INA219 current/power monitor.
 
-## ویژگی‌های کلیدی INA219
-اندازه‌گیری جریان دوطرفه: می‌تواند جریان مستقیم و معکوس را اندازه‌گیری کند* .
-* اندازه‌گیری ولتاژ: از 0 تا 26 ولت.
-* اندازه‌گیری جریان: بسته به مقاومت شنت، توانایی اندازه‌گیری جریان تا چند آمپر را دارد.
-* رابط I2C: برای ارتباط با میکروکنترلرها.
-* دقت بالا: 12 بیتی با دقت و خطای کم در اندازه‌گیری.
-* نحوه استفاده
-* اتصال مقاومت شنت: مقاومت شنت به سری با بار و ماژول متصل می‌شود تا جریان عبوری از بار را اندازه‌گیری کند.
-* پیکربندی پروتکل I2C: می‌توان آدرس I2C را تنظیم کرد و سپس از طریق پروتکل I2C مقادیر ولتاژ، جریان و توان را خواند.
-* خواندن مقادیر: با ارسال دستورات I2C به INA219 می‌توان مقادیر خام را خواند و سپس به جریان و ولتاژ تبدیل کرد.
-* این ماژول برای کاربردهای مختلف، از جمله نظارت بر مصرف باتری، مانیتورینگ انرژی، و پروژه‌های اینترنت اشیا مناسب است.
+## Integration
 
-## کلاس INA219
-این کلاس به شما اجازه می‌دهد که ولتاژ، جریان و توان را از سنسور INA219 بخوانید و به راحتی از آن استفاده کنید.
+- Configure and initialize an I2C peripheral in STM32CubeMX.
+- Pass the 7-bit I2C address (default `0x40`); the driver shifts it for the STM32 HAL API.
+- Confirm the module's shunt resistance and expected current range before selecting the calibration register.
+- Check `status()` after a measurement to detect the last I2C transaction failure.
 
-## توضیحات کد
- 
-* **تابع getVoltag**e: ولتاژ باس را بر حسب ولت برمی‌گرداند. 
-تابع* getCurrent: جریان را بر حسب آمپر برمی‌گرداند.
-* تابع getPower: توان را بر حسب وات برمی‌گرداند.
-* توابع readRegister و writeRegister: این توابع برای خواندن و نوشتن داده‌ها از/به رجیسترهای سنسور از طریق I2C استفاده می‌شوند.
+## Current API
 
-## نحوه استفاده
-فرض کنید hi2c1 قبلاً
-مقداردهی اولیه شده است:
+- `getVoltage()`: bus voltage in volts, using the INA219 bus-voltage register's 4 mV LSB.
+- `getCurrentRaw()`: signed raw current-register value, not calibrated amperes or milliamperes.
+- `getPowerRaw()`: raw power-register value, not a physical unit conversion.
+- `status()`: last HAL I2C status.
 
-```cpp
-INA219 sensor(&hi2c1);
+The calibration value `4096` is preserved as an example and is **not universally correct**. Physical current/power units require a calibration value derived from the shunt resistance and chosen current LSB. Do not treat the raw values as engineering units.
 
-float voltage = sensor.getVoltage(); // بر حسب ‌ولت
-float current = sensor.getCurrent(); // بر حسب میلی‌آمپر
-float power = sensor.getPower();     // بر حسب میلی‌وات
-```
-
-این کد به راحتی مقادیر ولتاژ، جریان و توان را از ماژول INA219 می‌خواند و آماده‌ی استفاده در سایر بخش‌های برنامه است.
+The implementation uses bounded 100 ms I2C timeouts and returns zero on a read error; therefore a legitimate zero measurement must be distinguished from failure using `status()`. No hardware validation is claimed.
