@@ -48,12 +48,20 @@ private:
             return false;
         }
 
-        const HAL_StatusTypeDef rxStatus = HAL_UART_Receive(
-            huart, reinterpret_cast<uint8_t*>(response),
-            static_cast<uint16_t>(responseSize - 1U), timeout);
-        response[responseSize - 1U] = '\0';
+        uint16_t received = 0U;
+        bool receivedAny = false;
+        while (received < responseSize - 1U) {
+            uint8_t byte = 0U;
+            const HAL_StatusTypeDef rxStatus = HAL_UART_Receive(huart, &byte, 1U, timeout);
+            if (rxStatus != HAL_OK) break;
+            receivedAny = true;
+            response[received++] = static_cast<char>(byte);
+            response[received] = '\0';
+            if (byte == '\n') break;
+        }
+        response[received] = '\0';
         setATMode(false);
-        return rxStatus == HAL_OK;
+        return receivedAny;
     }
 
     //===============================================================================
