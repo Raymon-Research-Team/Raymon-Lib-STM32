@@ -22,15 +22,19 @@ Raymon-Lib-STM32 مجموعه‌ای از ابزارهای C/C++، مثال‌ه
 
 | بخش | کاربرد | وابستگی و نکته |
 |---|---|---|
-| [QBuffer](../QBuffer/QBuffer.hpp) | بافر بایتی با ظرفیت ثابت | فقط هدر؛ رفتار مالکیت حافظه را بررسی کنید |
+| [QBuffer](../QBuffer/README.md) | بافر بایتی، قاب‌بندی بسته، CRC و پردازش فرمان | C++؛ محدودیت ظرفیت و API را بررسی کنید |
 | [QPacket](../QBuffer/QPacket.hpp) | قاب‌بندی بسته با نشانگر، طول، شمارنده و CRC | وابسته به [QCRC](../QBuffer/QCRC.hpp) |
 | [FlashEEPROM](../FlashEEPROM/README.md) | ذخیره و بازیابی ساختار در فلش داخلی | STM32 HAL و main.h؛ بررسی آدرس فلش ضروری است |
 | [PrintfUart](../PrintfUart/README.md) | ورودی/خروجی قالب‌بندی‌شده UART | STM32 HAL و main.h |
 | [سروو SG90](../ServoMotor%20SG90/Readme.md) | کنترل سروو با PWM | مثال موجود از STM32F1/TIM2 استفاده می‌کند |
 | [FFT برای STM32H743](../FFT%28STM32H743VITx%29/README.md) | مثال FFT با CMSIS-DSP | نیازمند پیکربندی سازگار CMSIS-DSP |
-| [پرش به Bootloader](../BOOTLOADER/jump_to_bootloader.c) | مثال وابسته به MCU | نقشهٔ حافظه باید تأیید شود |
+| [پرش به Bootloader](../BOOTLOADER/README.md) | مثال وابسته به MCU | نقشهٔ حافظه باید تأیید شود؛ بالقوه خطرناک |
 | [قفل برنامه](../Lock_program_in_code/README.md) | توضیحات محافظت firmware | پیش از اجرا اثرهای مخرب احتمالی را بررسی کنید |
-| [نمونهٔ Bluetooth](../Bluetooth%28doBT_01%29/doBT_01.hpp) | کد وابسته به ماژول | وابسته به سخت‌افزار و پروتکل |
+| [نمونهٔ Bluetooth](../Bluetooth%28doBT_01%29/README.md) | کد وابسته به ماژول | وابسته به سخت‌افزار و پروتکل |
+| [Bluetooth PW05](../Bluetooth%28PW05%29/README.md) | کنترل ماژول از طریق UART | وابسته به firmware، AT command و سیم‌بندی |
+| [نمایشگر ILI9488](../LCD_ILI9488/README.md) | درایور SPI و توابع رسم TFT | چند پیاده‌سازی ناسازگار؛ فقط یکی را انتخاب کنید |
+| [cUart](../cUart/README.md) | اتصال streamهای C++ به UART | ورودی فعلی مشکل طول‌عمر اشاره‌گر دارد |
+| [ابزار تغییر پسوند C/C++](../000_New_File_C%2B%2B/README.md) | تغییر نام main.c و main.cpp | فقط تغییر نام؛ کد را تبدیل نمی‌کند |
 
 این فهرست بر اساس فایل‌های موجود تهیه شده است؛ وجود فایل به معنی کامپایل موفق یا آزمایش روی سخت‌افزار نیست.
 
