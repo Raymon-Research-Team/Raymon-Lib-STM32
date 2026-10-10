@@ -27,10 +27,10 @@ Raymon-Lib-STM32 is a collection of embedded C/C++ utilities, peripheral example
 | [FlashEEPROM](FlashEEPROM/README.md) | Store and restore a structure in internal flash | STM32 HAL and project main.h; target flash layout must be checked |
 | [PrintfUart](PrintfUart/README.md) | Formatted UART input/output | STM32 HAL and project main.h |
 | [Servo Motor SG90](ServoMotor%20SG90/Readme.md) | PWM-based servo example | Existing guide uses STM32F1/TIM2 as its example |
-| [FFT for STM32H743](FFT(STM32H743VITx)/README.md) | FFT example using CMSIS-DSP | Compatible CMSIS-DSP and target configuration |
+| [FFT for STM32H743](FFT%28STM32H743VITx%29/README.md) | FFT example using CMSIS-DSP | Compatible CMSIS-DSP and target configuration |
 | [Bootloader jump](BOOTLOADER/jump_to_bootloader.c) | MCU-specific bootloader jump | Verify exact MCU and memory map |
 | [Lock program in code](Lock_program_in_code/README.md) | Read-protection / firmware-locking notes | Potentially destructive; review before use |
-| [Bluetooth example](Bluetooth(doBT_01)/doBT_01.hpp) | Module-specific Bluetooth code | Hardware and protocol dependent |
+| [Bluetooth example](Bluetooth%28doBT_01%29/doBT_01.hpp) | Module-specific Bluetooth code | Hardware and protocol dependent |
 
 This catalogue is based on files currently present in the repository. It does not claim that every component has been compiled or hardware-validated.
 
