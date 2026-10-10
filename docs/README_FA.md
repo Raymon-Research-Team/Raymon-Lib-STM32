@@ -91,6 +91,7 @@ git clone https://github.com/Raymon-Research-Team/Raymon-Lib-STM32.git
 
 > پیش از ارسال، شبکه را دقیق بررسی کنید. BTC فقط روی شبکهٔ Bitcoin و آدرس ETH/USDT زیر فقط روی شبکهٔ Ethereum (ERC-20) است. انتخاب شبکهٔ اشتباه ممکن است باعث از دست رفتن دائمی دارایی شود.
 
+<div align="center">
 <table>
 <tr>
 <td align="center" width="50%">
@@ -109,7 +110,7 @@ git clone https://github.com/Raymon-Research-Team/Raymon-Lib-STM32.git
 </td>
 </tr>
 </table>
-
+</div>
 ### 🌟 راه‌های دیگر حمایت
 
 <table>
