@@ -14,9 +14,12 @@
 
 ---
 
+
+  
 ## معرفی
 
-Raymon-Lib-STM32 مجموعه‌ای از ابزارهای C/C++، مثال‌های وسایل جانبی و آزمایش‌های مرتبط با میکروکنترلرهای STM32 است. مخزن یک بستهٔ واحد قابل نصب نیست؛ هر بخش ممکن است به HAL، نسخهٔ کامپایلر، سخت‌افزار یا کتابخانهٔ جداگانه‌ای نیاز داشته باشد.
+<div dir="rtl" >
+Raymon-Lib-STM32  مجموعه‌ای از ابزارهای C/C++، مثال‌های وسایل جانبی و آزمایش‌های مرتبط با میکروکنترلرهای STM32 است. مخزن یک بستهٔ واحد قابل نصب نیست؛ هر بخش ممکن است به HAL، نسخهٔ کامپایلر، سخت‌افزار یا کتابخانهٔ جداگانه‌ای نیاز داشته باشد.
 
 ## فهرست اجزا
 
@@ -77,6 +80,7 @@ git clone https://github.com/Raymon-Research-Team/Raymon-Lib-STM32.git
 ## 💖 حمایت از Raymon-Lib-STM32
 
 اگر این ابزارها و مثال‌های STM32 برای شما مفید بوده‌اند، کمک مالی داوطلبانه به نگهداری، آزمایش سخت‌افزاری و بهبود مستندات کمک می‌کند. حمایت مالی، مجوز مخزن را تغییر نمی‌دهد و حق استفادهٔ اضافه‌ای ایجاد نمی‌کند.
+</div>
 
 <div dir="rtl" align="center">
 
@@ -92,6 +96,7 @@ git clone https://github.com/Raymon-Research-Team/Raymon-Lib-STM32.git
 > پیش از ارسال، شبکه را دقیق بررسی کنید. BTC فقط روی شبکهٔ Bitcoin و آدرس ETH/USDT زیر فقط روی شبکهٔ Ethereum (ERC-20) است. انتخاب شبکهٔ اشتباه ممکن است باعث از دست رفتن دائمی دارایی شود.
 
 <div align="center">
+  
 <table>
 <tr>
 <td align="center" width="50%">
@@ -110,16 +115,22 @@ git clone https://github.com/Raymon-Research-Team/Raymon-Lib-STM32.git
 </td>
 </tr>
 </table>
+
 </div>
+
+<div dir="rtl" align="center" >
+  
 ### 🌟 راه‌های دیگر حمایت
 
-<table>
-<tr>
+<table width="100%">
+<tr width="100%">
 <td align="center" width="25%">⭐<br><b>ستاره بدهید</b><br>به مخزن</td>
 <td align="center" width="25%">🐛<br><b>گزارش کنید</b><br>ایرادها را</td>
 <td align="center" width="25%">🧪<br><b>آزمایش کنید</b><br>اجزا را</td>
 <td align="center" width="25%">📝<br><b>بهبود دهید</b><br>مستندات را</td>
 </tr>
 </table>
+
+</div>
 
 برای اطلاع‌رسانی دربارهٔ کمک مالی می‌توانید شناسهٔ تراکنش را به [rahman.h22@gmail.com](mailto:rahman.h22@gmail.com) ایمیل کنید. **هرگز کلید خصوصی یا عبارت بازیابی کیف پول را ارسال نکنید.**
