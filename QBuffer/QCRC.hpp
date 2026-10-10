@@ -1,6 +1,6 @@
 #pragma once
 #include <cstdint>
-#include <cstring> 
+#include <cstddef> 
 
 class QCRC {
 
@@ -20,6 +20,10 @@ private:
 public:
     
     static uint8_t CRC_8_CCITT(const uint8_t* data, size_t length) {
+        if (data == nullptr && length != 0U) {
+            return 0;
+        }
+
         uint8_t crc = 0xFF; // مقدار اولیه‌ی CRC
         for (size_t i = 0; i < length; ++i) {
             crc ^= data[i];
