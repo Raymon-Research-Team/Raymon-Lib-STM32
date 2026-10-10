@@ -155,3 +155,11 @@ void DisplayString(const std::string& str)
 | PA3       | MR          | ریست اصلی      |
 
 ![](media/bd835bbfd2951a8fdda043710b78d45d.png)
+
+
+## Safety notes for current implementation
+
+- The constructor caps the supported chain length at 8 because the internal segment buffer contains 8 entries.
+- Decimal precision is limited to 0–6 and formatting uses the destination buffer's actual capacity.
+- The implementation uses blocking GPIO toggles and millisecond delays for every shift-register bit. This is slow; use a timer/SPI-based implementation if display refresh latency matters.
+- The pin polarity and segment mapping still need verification for the specific common-anode/common-cathode wiring. Hardware validation is not claimed.
