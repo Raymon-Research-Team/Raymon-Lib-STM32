@@ -1,190 +1,42 @@
-<<<<<<< Updated upstream
-# PrintfUart Library
-=======
-printf and scanf and getchar() for STM32-Uart.
-C library type: Newlib-nano with floating point support in printf() and scanf();
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+# PrintfUart
 
-## Overview
+The PrintfUart class provides formatted output and line-oriented input over an STM32 HAL UART handle.
 
-The \`PrintfUart\` class provides an easy interface for formatted input and output over UART in STM32 applications. It allows you to send formatted strings and read input with specified formats, making serial communication more convenient.
+## Dependencies
 
-## Features
+- PrintfUart.h
+- The consuming project's main.h, exposing the STM32 HAL definitions
+- A UART handle initialized by the consuming STM32CubeMX/STM32CubeIDE project
 
-\- Formatted output using printf-style formatting.
+## Integration
 
-\- Input reading with support for multiple data types.
+Add PrintfUart.h to the project and configure the include path. The repository currently has no PrintfUart.cpp; the implementation is in the header.
 
-\- Optional feedback for input received over UART.
-
-\- Automatic delay adjustment based on baud rate.
-
-## \#\# Installation
-
-To use the \`PrintfUart\` library, include the header file in your project and link it with your STM32 HAL library.
-
+Example, assuming huart2 is initialized by the project:
 
 ```cpp
 #include "PrintfUart.h"
-```
+extern UART_HandleTypeDef huart2;
 
-
-
-## Usage
-
-## Initialization
-
-Create an instance of PrintfUart by passing the UART handle and feedback option.
-
-
-```cpp
-UART_HandleTypeDef huart; // Your UART handle
-PrintfUart uart(&huart, true); // Set feedback input
-```
-
-
-
-## 
-
-## Sending Data
-
-You can send formatted data using the printf method:
-
-```cpp
-uart.printf("Hello, %s! Number: %d\n", "World", 42);
-```
-
-## 
-
-## Receiving Data
-
-To receive formatted input, use the scanf method:
-
-```cpp
-int number;
-std::string text;
-uart.scanf("%s %d", text, number);
-```
-
-## 
-
-## Reading a Character
-
-Use the getchar method to read a single character from UART:
-
-```cpp
-char receivedChar = uart.getchar();
-```
-
-## 
-
-## Example
-
-```cpp
-extern "C" void main() {
-    UART_HandleTypeDef huart; // Initialize your UART here
-    PrintfUart uart(&huart, true);
-    
-    uart.printf("UART Initialized.\n");
-
-    std::string name;
-    int value;
-    uart.scanf("%s %d", name, value);
-    uart.printf("Received: %s %d\n", name.c_str(), value);
+void uart_example() {
+    PrintfUart uart(&huart2, true);
+    uart.printf("Value: %d\r\n", 42);
+    int value = 0;
+    uart.scanf("%d", value); // waits for a line of input
 }
 ```
 
-# Persian README content
+## API notes
 
-# PrintfUart
+- Constructor: PrintfUart(UART_HandleTypeDef* huart, bool isFeedBackInput). The boolean controls echo of received characters.
+- printf(format, ...): sends formatted output; the current implementation uses a fixed 256-byte local buffer.
+- scanf(format, ...): receives characters until CR/LF, then parses the accumulated input.
+- getchar(): check the declaration and implementation in the header before relying on this method.
 
-## مرور کلی
+## Limitations
 
-کلاس PrintfUart یک رابط ساده برای ورودی و خروجی فرمت‌دار از طریق UART در برنامه‌های STM32 فراهم می‌کند. این کلاس به شما امکان می‌دهد رشته‌های فرمت‌دار را ارسال کرده و ورودی را با فرمت‌های مشخص شده بخوانید و ارتباط سری را راحت‌تر می‌سازد.
-
-## ویژگی‌ها
-
--   خروجی فرمت‌دار با استفاده از فرمت‌دهی به سبک printf.
--   خواندن ورودی با پشتیبانی از انواع داده‌های مختلف.
--   بازخورد اختیاری برای ورودی دریافتی از طریق UART.
--   تنظیم خودکار تأخیر بر اساس نرخ Baud.
--   
-
-## نصب
-
-برای استفاده از کتابخانه PrintfUart، فایل هدر را در پروژه خود گنجانده و آن را با کتابخانه HAL STM32 خود لینک کنید.
-
-```cpp
-#include "PrintfUart.h"
-```
-
-## استفاده
-
-## راه‌اندازی
-
-یک نمونه از PrintfUart با گذراندن دسته UART و گزینه بازخورد ایجاد کنید.
-
-```cpp
-UART_HandleTypeDef huart; // دسته UART شما
-PrintfUart uart(&huart, true); // تنظیم بازخورد ورودی 
-```
-
-## ارسال داده‌ها
-
-شما می‌توانید با استفاده از متد printf داده‌های فرمت‌دار ارسال کنید:
-
-```cpp
-uart.printf("سلام، %s! شماره: %d\n", "دنیا", 42);
-```
-
-## دریافت داده‌ها
-
-برای دریافت ورودی فرمت‌دار، از متد scanf استفاده کنید:
-
-```cpp
-int number;
-std::string text;
-uart.scanf("%s %d", text, number);
-```
-
-## خواندن یک کاراکتر
-
-از متد getchar برای خواندن یک کاراکتر از UART استفاده کنید:
-
-```cpp
-char receivedChar = uart.getchar();
-```
-
-## مثال
-
-```cpp
-bool feedback = true;                    // feedback Of insert Character of uart to uart
-PrintfUart io(&huart1, feedback);        // initial uart for printf or scanf
------------------------------------------------------
-char c = io.getchar(); 
------------------------------------------------------
-int i_num = 10;
-io.printf("int number is %d\r\n", i_num);
------------------------------------------------------
-float f_num  = -100.54;
-io.printf("Float number is %f\r\n", f_num);
------------------------------------------------------
-double d_num = 1623.92377;
-io.printf("Double number is %lf\r\n", d_num);
------------------------------------------------------
-char chr1 =  'C';
-io.printf("char is %c\r\n", chr1);
------------------------------------------------------      
-char chr2[]  = "Hello World!";
-io.printf("Array char is: %s\r\n", chr2);
------------------------------------------------------
-std::string name = "Rahman";
-io.printf("My Name is %s\r\n", name);
------------------------------------------------------
-        
-io.scanf("%s %d", name, i_num);
-io.printf("My Name is %s and my Age is %d\r\n", name , i_num);
-```
+- Input reception is blocking and uses HAL_MAX_DELAY; the caller can wait indefinitely for input.
+- HAL return values, receive errors, empty input, input length, and format validation need review before production use.
+- Output strings that exceed the internal buffer capacity are not sent by the current implementation.
+- If USE_FREERTOS is enabled, verify the FreeRTOS delay integration and required headers.
+- This example has not been compiled or tested on hardware as part of this documentation change.
