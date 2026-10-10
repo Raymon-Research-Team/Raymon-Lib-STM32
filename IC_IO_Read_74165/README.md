@@ -100,3 +100,7 @@ while (1) {
 * اطمینان حاصل کنید که فایل main.h تمام تعاریف و اینکلود‌های لازم برای توابع GPIO و HAL را دارد. 
 * تأخیر در delay_ms را بر اساس نیازهای زمانی برنامه تنظیم کنید. 
 مجوز
+
+## Memory ownership and limits
+
+The reader now checks allocation failure, returns `nullptr` from `read()` if construction could not allocate its arrays, and disables copying/moving to avoid double-free of owned memory. The returned pointer is owned by the object and must not be freed by the caller. The interface remains blocking and has not been hardware-tested here.
