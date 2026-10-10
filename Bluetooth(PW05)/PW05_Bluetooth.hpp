@@ -33,7 +33,7 @@ private:
         response[0] = '\0';
         setATMode(true);
         char command[50];
-        const int commandLength = snprintf(command, sizeof(command), "%s\\r\\n", cmd);
+        const int commandLength = snprintf(command, sizeof(command), "%s\r\n", cmd);
         if (commandLength < 0 || static_cast<size_t>(commandLength) >= sizeof(command)) {
             setATMode(false);
             return false;
