@@ -57,10 +57,10 @@ public:
         outputData[3] = len_LSB;
         outputData[4] = crc1;
 
+        // Calculate CRC before moving bytes so overlapping input/output remains valid.
+        const uint8_t dataCRC = QCRC::CRC_8_CCITT(inputData, inputSize);
         // memmove also supports callers whose input overlaps the output buffer.
         std::memmove(&outputData[5], inputData, inputSize);
-
-        const uint8_t dataCRC = QCRC::CRC_8_CCITT(inputData, inputSize);
         const uint8_t combinedCRCInput[] = { crc1, dataCRC };
         outputData[inputSize + 5U] =
             QCRC::CRC_8_CCITT(combinedCRCInput, sizeof(combinedCRCInput));
