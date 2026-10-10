@@ -80,9 +80,6 @@ git clone https://github.com/Raymon-Research-Team/Raymon-Lib-STM32.git
 
 <div dir="rtl" align="center">
 
-[![حمایت مالی](https://img.shields.io/badge/حمایت_مالی-پشتیبانی_از_توسعه-f97316.svg?style=for-the-badge)](https://donatr.ee/raymon-research-team/)
-[![تماس](https://img.shields.io/badge/تماس-ایمیل-blue.svg?style=for-the-badge)](mailto:rahman.h22@gmail.com)
-
 <a href="https://donatr.ee/raymon-research-team/" target="_blank" rel="noopener noreferrer"><img src="https://raw.githubusercontent.com/Raymon-Research-Team/ZenOS-RTOS/main/docs/guide-html/donate-qr.png" alt="کد QR صفحهٔ حمایت مالی Raymon Research Team" width="190" /></a>
 
 **اسکن کد QR یا ورود به صفحهٔ حمایت مالی:**  
