@@ -2,6 +2,9 @@
 #include "main.h"
 #include <cstdint>
 
+// Application must provide this byte-queue hook; called from RX interrupt context.
+extern void Qbuffer_CAN_push(uint8_t data);
+
 class CAN_BUS_PCA82C251T {
 public:
     CAN_BUS_PCA82C251T(CAN_HandleTypeDef* phcan, uint32_t fifoNum = CAN_RX_FIFO0,
