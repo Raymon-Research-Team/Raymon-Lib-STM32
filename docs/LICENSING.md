@@ -12,7 +12,9 @@ The top-level LICENSE declares Business Source License 1.1 (BUSL-1.1):
 - Change Date: 2030-10-10
 - Change License: GNU GPL version 2.0 or later
 
-BUSL-1.1 is not an Open Source license. Review the complete top-level license for the permissions and restrictions that apply before copying, redistributing, or using covered code in a product.
+BUSL-1.1 is not an Open Source license. With no Additional Use Grant, the stated grant allows copying, modification, redistribution, and non-production use, subject to the license terms; it does not grant production use before the change takes effect. A commercial license or another permission from the licensor may be needed for production use before then.
+
+**Important timing detail:** for each version, the change to the Change License takes effect on the earlier of the stated Change Date or the fourth anniversary of that version's first publicly available distribution under BUSL-1.1. Therefore, 2030-10-10 is not necessarily the transition date for every version. Read the complete top-level LICENSE before use.
 
 ## Dependency boundaries
 
