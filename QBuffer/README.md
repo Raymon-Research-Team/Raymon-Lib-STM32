@@ -1,225 +1,82 @@
-# QPacket System Documentation
-This repository includes three main classes designed for buffer and packet processing within embedded systems or low-level applications. These classes are as follows:
+# QBuffer / QPacket / QCommand
 
-### **QBuffer**: <small>*A ring buffer for efficient data storage.*</small>
-### **QPacket**: *<small>A packet creation utility for encoding and sending data.</small>*
-### **QCommand**: *<small>A command parser that reads and validates packets from the buffer.</small>*
-The code and examples are provided in both English and Persian.
+این پوشه سه ابزار مستقل برای بافر حلقوی و قاب‌بندی بسته دارد. فایل‌های اصلی `QBuffer.hpp`، `QCRC.hpp`، `QPacket.hpp` و `QCommand.hpp` هستند.
 
-## Classes Overview
-# QBuffer
-The QBuffer class provides a simple circular buffer implementation for storing and managing data. It’s designed to handle data in a FIFO (First In, First Out) manner.
+## 1. QBuffer
 
-## Example Usage:
+`QBuffer` بافر FIFO حلقوی با ظرفیت ثابت است. اگر بافر پر شود، `Push()` قدیمی‌ترین بایت را حذف می‌کند و جدیدترین بایت را نگه می‌دارد. در صورت خالی بودن، `Pop()` مقدار `-1` می‌دهد. تخصیص حافظه ممکن است شکست بخورد؛ در این حالت `Push()` داده‌ای ذخیره نمی‌کند.
 
 ```cpp
-#include "QBuffer.h"
+#include "QBuffer.hpp"
 
-int main() {
-    QBuffer buffer(10);  // Create a buffer of size 10
+QBuffer buffer(16);
+buffer.Push(0x12);
+buffer.Push(0x34);
+int value = buffer.Pop(); // 0x12
+```
 
-    buffer.Push(0x12);    // Push data into the buffer
-    buffer.Push(0x34);
+این کلاس thread-safe نیست. اگر از ISR و task مشترکاً استفاده می‌شود، همگام‌سازی یا صف مخصوص ISR لازم است.
 
-    int data = buffer.Pop();   // Read data from the buffer
-    std::cout << "Popped Data: " << data << std::endl;
+## 2. QPacket
 
-    buffer.Flush();            // Clear the buffer
+قالب بستهٔ فعلی:
+
+| Offset | Field |
+|---:|---|
+| 0 | Start byte `0xAA` |
+| 1 | Packet counter (مقادیر 1 تا 255) |
+| 2–3 | طول کدشده، big-endian؛ برابر طول payload + 3 |
+| 4 | CRC هدر |
+| 5… | Payload |
+| payload length + 5 | CRC دادهٔ ترکیبی |
+| payload length + 6 | End byte `0xBB` |
+
+طول کل بسته برابر `payload length + 7` است. حداکثر payload برابر 512 بایت است و payload خالی در `QPacket::Create` پذیرفته نمی‌شود.
+
+```cpp
+#include "QPacket.hpp"
+
+uint8_t payload[] = {0x45, 0x78, 0x01};
+uint8_t packet[sizeof(payload) + 7];
+const uint8_t counter = QPacket::Create(
+    payload, sizeof(payload), packet, sizeof(packet));
+
+if (counter == 0) {
+    // ورودی یا ظرفیت نامعتبر است.
 }
 ```
 
-## Methods
-* `Push(uint8_t data)`: Add data to the buffer. 
-* `Pop()`: Remove and return the oldest data from the buffer.
-* `GetLength()`: Return the current number of items in the buffer.
-* `PeekAt(uint32_t index)`: Peek at data at a given index without removal.
-* `Remove(uint32_t num)`: Remove a specified number of items from the buffer.
-* `Flush()`: Clear all buffer contents.
+شمارندهٔ داخلی static است و برای استفادهٔ هم‌زمان از چند task نیاز به محافظت دارد.
 
+## 3. QCommand
 
-# QPacket
-The QPacket class creates a data packet format. Packets contain a start byte, packet counter, length, CRC check, data, and an end byte.
+`QCommand::Check` بسته را از ابتدای `QBuffer` بررسی می‌کند. مقدار بازگشتی صفر یعنی بسته هنوز آماده نیست یا نامعتبر است؛ مقدار غیرصفر شمارندهٔ بستهٔ معتبر است. ظرفیت واقعی خروجی باید صریحاً پاس داده شود تا از نوشتن خارج از محدوده جلوگیری شود.
 
 ```cpp
-========================================================
-Packet Format:
-========================================================
-Start Packet (0xAA)
-Packet Counter
-Packet len_MSB
-Packet len_LSB
-crc1
-data[]
-crc2
-End Packet (0xBB)
-========================================================
-```
+#include "QBuffer.hpp"
+#include "QCommand.hpp"
 
+QBuffer rx(1024);
+uint8_t payload[512];
+uint16_t payloadSize = 0;
+uint8_t counter = QCommand::Check(
+    &rx, payload, sizeof(payload), payloadSize);
 
-
-
-## Example Usage:
-
-```cpp
-#include "QPacket.h"
-
-int main() {
-    uint8_t inputData[] = {0x45, 0x78, 0x01};
-    uint8_t outputData[20];
-    uint16_t outputSize;
-
-    uint8_t packetCounter = QPacket::Create(inputData, 3, outputData, outputSize);
-
-    std::cout << "Packet Counter: " << (int)packetCounter << "\n";
-    std::cout << "Packet Size: " << outputSize << std::endl;
+if (counter != 0) {
+    // payload[0..payloadSize-1] یک بسته معتبر است.
 }
 ```
 
-## Methods
-* `Create(const uint8_t* inputData, uint16_t inputSize, uint8_t* outputData, uint16_t& outputSize)`: Constructs a packet with provided data and CRC, returning a counter for the packet.
+اگر ظرفیت خروجی برای payload کافی نباشد، بسته از بافر حذف نمی‌شود و تابع صفر برمی‌گرداند. در صورت خطای CRC یا ساختار، یک بایت حذف می‌شود تا جست‌وجوی هم‌ترازی مجدد ادامه یابد.
 
-# QCommand
-The QCommand class checks and decodes packets received in the buffer, ensuring valid packet structure and CRC.
+## CRC
 
-## Example Usage:
+`QCRC::CRC_8_CCITT` در این پروژه از polynomial برابر `0x07` و مقدار اولیهٔ `0xFF` استفاده می‌کند. نام «CRC-8-CCITT» در منابع مختلف ممکن است پارامترهای متفاوتی داشته باشد؛ برای ارتباط با دستگاه دیگر باید polynomial، مقدار اولیه، reflection و XOR نهایی در هر دو سمت یکسان باشند.
 
-```cpp
-#include "QCommand.h"
+## محدودیت‌ها
 
-int main() {
-    QBuffer buffer(20);
-    uint8_t inputData[] = {0xAA, 0x01, 0x00, 0x03, 0xAB, 0x45, 0x78, 0x01, 0xBB};
-    for (uint8_t byte : inputData) {
-        buffer.Push(byte);
-    }
-
-    uint8_t outputData[10];
-    uint16_t outputSize;
-    uint8_t packetCounter = QCommand::Check(&buffer, outputData, outputSize);
-
-    std::cout << "Packet Counter: " << (int)packetCounter << "\n";
-    std::cout << "Data Length: " << outputSize << std::endl;
-}
-```
-
-## Methods
-* `Check(QBuffer* _buffer, uint8_t* outputData, uint16_t& outputSize)`: Verifies the structure and CRC of packets, extracting data if valid.
-
-
-
->
-# کلاس‌ها
-# QBuffer
-کلاس QBuffer یک بافر دایره‌ای است که داده‌ها را به صورت FIFO (اول وارد، اول خارج) ذخیره می‌کند و مدیریت می‌کند.
-
-## مثال:
-
-```cpp
-#include "QBuffer.h"
-
-int main() {
-    QBuffer buffer(10);  // ایجاد یک بافر با اندازه 10
-
-    buffer.Push(0x12);    // افزودن داده به بافر
-    buffer.Push(0x34);
-
-    int data = buffer.Pop();   // دریافت داده از بافر
-    std::cout << "داده حذف شده: " << data << std::endl;
-
-    buffer.Flush();            // پاکسازی بافر
-}
-```
-
-## توابع
-
-* `Push(uint8_t data)`:
-افزودن داده به بافر.
-* `Pop()`:
-حذف و بازگردانی قدیمی‌ترین داده از بافر.
-* `GetLength()`:
-بازگرداندن تعداد آیتم‌های موجود در بافر.
-* `PeekAt(uint32_t index)`: 
-مشاهده داده در یک اندیس خاص بدون حذف.
-* `Remove(uint32_t num)`:
-حذف تعداد مشخصی از آیتم‌ها از بافر.
-* `Flush()`:
-پاکسازی تمامی محتوای بافر.
-
-
-# QPacket
-
-کلاس QPacket برای ایجاد یک بسته داده طراحی شده است. بسته‌ها شامل یک بایت شروع، شمارنده بسته، طول، CRC، داده‌ها و یک بایت پایان هستند.
-
-
-```cpp
-========================================================
-Packet Format:
-========================================================
-Start Packet (0xAA)
-Packet Counter
-Packet len_MSB
-Packet len_LSB
-crc1
-data[]
-crc2
-End Packet (0xBB)
-========================================================
-```
-
-
-## مثال:
-```cpp
- #include "QPacket.h"
- 
- int main() {
-     uint8_t inputData[] = {0x45, 0x78, 0x01};
-     uint8_t outputData[20];
-     uint16_t outputSize;
-     
-     uint8_t packetCounter = QPacket::Create(inputData, 3, outputData, outputSize);
-     
-     std::cout << "شمارنده بسته: " << (int)packetCounter << "\n";
-     std::cout << "اندازه بسته: " << outputSize << std::endl;
- }
-```
-
-
-## توابع
-* `Create(const uint8_t* inputData, uint16_t inputSize, uint8_t* outputData, uint16_t& outputSize)`:
-
-یک بسته با داده‌ها و CRC فراهم شد
-ه ایجاد می‌کند و شمارنده بسته را برمی‌گرداند.
-
-
-# QCommand
-
-کلاس QCommand بسته‌های دریافتی در بافر را بررسی و رمزگشایی می‌کند و از ساختار صحیح و CRC معتبر اطمینان می‌دهد.
-
-## مثال:
-```cpp
-#include "QCommand.h"
-
-int main() {
-    QBuffer buffer(20);
-    uint8_t inputData[] = {0xAA, 0x01, 0x00, 0x03, 0xAB, 0x45, 0x78, 0x01, 0xBB};
-    for (uint8_t byte : inputData) {
-        buffer.Push(byte);
-    }
-
-    uint8_t outputData[10];
-    uint16_t outputSize;
-    uint8_t packetCounter = QCommand::Check(&buffer, outputData, outputSize);
-
-    std::cout << "شمارنده بسته: " << (int)packetCounter << "\n";
-    std::cout << "طول داده: " << outputSize << std::endl;
-}
-```
-
-## توابع
-`Check(QBuffer* _buffer, uint8_t* outputData, uint16_t& outputSize)`: 
-
-ساختار و CRC بسته‌ها را بررسی کرده و در صورت معتبر بودن، داده‌ها را استخراج می‌کند.
-
-# نکته:
-## حداکثر طول داده محدود شده به مقدار 512 بایت 
-در کلاس QPacket و QCommand حداکثر طول داده ورودی و خروجی به اندازه 512 بایت محدود شده است.
+- این کد پروتکل رمزنگاری‌شده یا احراز هویت‌شده نیست؛ CRC فقط خطاهای تصادفی را تشخیص می‌دهد.
+- شمارندهٔ بسته به‌تنهایی تضمین تحویل یا جلوگیری از replay نیست.
+- کلاس‌ها thread-safe نیستند.
+- پس از تغییر امضای `QCommand::Check`، فراخوانی‌ها باید آرگومان ظرفیت خروجی را نیز بدهند.
+- تست خودکار و سازگاری بین‌نسخه‌ای این پروتکل در این README ادعا نمی‌شود.
