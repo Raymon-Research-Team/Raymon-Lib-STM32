@@ -48,11 +48,11 @@ public:
             return 0U;
         }
 
-        const uint16_t totalPacketSize = static_cast<uint16_t>(encodedLength + 5U);
+        const uint16_t totalPacketSize = static_cast<uint16_t>(encodedLength + 4U);
         if (buffer->GetLength() < totalPacketSize) return 0U;
 
         const int receivedHeaderCrc = buffer->PeekAt(4U);
-        const int endByte = buffer->PeekAt(static_cast<uint32_t>(encodedLength + 4U));
+        const int endByte = buffer->PeekAt(static_cast<uint32_t>(encodedLength + 3U));
         if (receivedHeaderCrc < 0 || endByte != END_Packet) {
             buffer->Remove(1U);
             return 0U;
