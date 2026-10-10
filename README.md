@@ -33,7 +33,7 @@ Raymon-Lib-STM32 is a collection of embedded C/C++ utilities, peripheral example
 | [Bluetooth example](Bluetooth%28doBT_01%29/README.md) | Module-specific Bluetooth code | Hardware and protocol dependent |
 | [PW05 Bluetooth](Bluetooth%28PW05%29/README.md) | UART-based Bluetooth module control | Firmware, AT commands and GPIO wiring dependent |
 | [ILI9488 TFT](LCD_ILI9488/README.md) | SPI TFT display and drawing APIs | Multiple conflicting variants; select and validate one only |
-| [cUart](cUart/README.md) | C++ streams backed by UART | Current input adapter has a pointer-lifetime bug; read limitations before use |
+| [cUart](cUart/README.md) | C++ streams backed by UART | Blocking UART streams; read limitations before use |
 | [C/C++ rename helpers](000_New_File_C%2B%2B/README.md) | Rename main.c / main.cpp | Renames only; does not convert source code |
 
 This catalogue is based on files currently present in the repository. It does not claim that every component has been compiled or hardware-validated.
