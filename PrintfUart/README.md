@@ -1,42 +1,35 @@
-# PrintfUart
+# PrintfUart — STM32 HAL UART formatted I/O
 
-The PrintfUart class provides formatted output and line-oriented input over an STM32 HAL UART handle.
+`PrintfUart.hpp` contains the implementation. `PrintfUart.h` is a compatibility wrapper that includes the canonical header so both include paths do not define duplicate classes.
 
-## Dependencies
+## Requirements
 
-- PrintfUart.h
-- The consuming project's main.h, exposing the STM32 HAL definitions
-- A UART handle initialized by the consuming STM32CubeMX/STM32CubeIDE project
+- STM32 HAL UART and the consuming project's `main.h`.
+- An initialized `UART_HandleTypeDef* `.
+- C++ standard-library support for `std::string` and type traits.
 
-## Integration
-
-Add PrintfUart.h to the project and configure the include path. The repository currently has no PrintfUart.cpp; the implementation is in the header.
-
-Example, assuming huart2 is initialized by the project:
+## Example
 
 ```cpp
 #include "PrintfUart.h"
 extern UART_HandleTypeDef huart2;
 
 void uart_example() {
-    PrintfUart uart(&huart2, true);
-    uart.printf("Value: %d\r\n", 42);
+    PrintfUart uart(&huart2, true); // echo received characters
+    uart.printf("Value: %d\\r\\n", 42);
     int value = 0;
-    uart.scanf("%d", value); // waits for a line of input
+    uart.scanf("%d", value); // blocks until CR/LF
 }
 ```
 
-## API notes
+## Current API and limitations
 
-- Constructor: PrintfUart(UART_HandleTypeDef* huart, bool isFeedBackInput). The boolean controls echo of received characters.
-- printf(format, ...): sends formatted output; the current implementation uses a fixed 256-byte local buffer.
-- scanf(format, ...): receives characters until CR/LF, then parses the accumulated input.
-- getchar(): check the declaration and implementation in the header before relying on this method.
+- Constructor: `PrintfUart(UART_HandleTypeDef* huart, bool isFeedBackInput = false)`.
+- `printf(format, ...)` uses a fixed 256-byte buffer; overlong output is discarded. Use format specifiers that match the exact argument types.
+- `scanf(format, ...)` blocks on UART input using `HAL_MAX_DELAY`. It uses simple whitespace splitting and `sscanf`; it is not a full scanf-compatible parser.
+- Input accumulation uses dynamically growing `std::string` without a maximum line length. Untrusted or unbounded input can exhaust heap memory.
+- HAL receive/transmit status is not consistently propagated to callers. Avoid use in ISRs and timing-critical tasks.
+- The class uses the same UART for input and output; synchronize access if multiple tasks use it.
+- With `USE_FREERTOS`, verify that the appropriate FreeRTOS headers and tick configuration are present.
 
-## Limitations
-
-- Input reception is blocking and uses HAL_MAX_DELAY; the caller can wait indefinitely for input.
-- HAL return values, receive errors, empty input, input length, and format validation need review before production use.
-- Output strings that exceed the internal buffer capacity are not sent by the current implementation.
-- If USE_FREERTOS is enabled, verify the FreeRTOS delay integration and required headers.
-- This example has not been compiled or tested on hardware as part of this documentation change.
+This is a convenience utility, not a hardened command-line parser. It has not been compiled across all STM32 toolchains or hardware-tested in this repository.
