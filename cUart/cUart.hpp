@@ -1,60 +1,75 @@
 #pragma once
 #include "main.h"
 #include <iostream>
+#include <streambuf>
+#include <cstdint>
 
-// پیاده‌سازی کلاس سفارشی برای هدایت خروجی (cout) به USART
+// Blocking UART stream adapters. Do not use from an ISR.
 class UartOutput : public std::streambuf {
-private:
-    UART_HandleTypeDef* huart; // اشاره‌گر به huart برای انتقال داده
 public:
-    // سازنده برای دریافت huart
-    UartOutput(UART_HandleTypeDef* huart)
-        : huart(huart) {}
+    explicit UartOutput(UART_HandleTypeDef* uart) : huart(uart) {}
 
 protected:
-    virtual int overflow(int c) override {
-        // if (c == '\n') {
-        //     HAL_UART_Transmit(huart, (uint8_t*)"\r", 1, HAL_MAX_DELAY); // ارسال '\r' قبل از '\n'
-        // }
-        HAL_UART_Transmit(huart, (uint8_t*)&c, 1, HAL_MAX_DELAY); // ارسال کاراکتر به پورت سریال
-        return c;
+    int_type overflow(int_type c) override {
+        if (traits_type::eq_int_type(c, traits_type::eof())) {
+            return traits_type::not_eof(c);
+        }
+        if (huart == nullptr) return traits_type::eof();
+        uint8_t byte = static_cast<uint8_t>(traits_type::to_char_type(c));
+        if (HAL_UART_Transmit(huart, &byte, 1U, HAL_MAX_DELAY) != HAL_OK) {
+            return traits_type::eof();
+        }
+        return traits_type::not_eof(c);
     }
+
+    std::streamsize xsputn(const char* data, std::streamsize count) override {
+        if (huart == nullptr || data == nullptr || count <= 0) return 0;
+        std::streamsize sent = 0;
+        while (sent < count) {
+            const std::streamsize chunk = (count - sent > 0xFFFF)
+                ? 0xFFFF : count - sent;
+            if (HAL_UART_Transmit(huart,
+                    reinterpret_cast<uint8_t*>(const_cast<char*>(data + sent)),
+                    static_cast<uint16_t>(chunk), HAL_MAX_DELAY) != HAL_OK) break;
+            sent += chunk;
+        }
+        return sent;
+    }
+
+private:
+    UART_HandleTypeDef* huart;
 };
 
-// پیاده‌سازی کلاس سفارشی برای دریافت ورودی (cin) از USART
 class UartInput : public std::streambuf {
-private:
-    UART_HandleTypeDef* huart; // اشاره‌گر به huart برای دریافت داده
 public:
-    // سازنده برای دریافت huart
-    UartInput(UART_HandleTypeDef* huart)
-        : huart(huart) {}
+    explicit UartInput(UART_HandleTypeDef* uart) : huart(uart), currentByte(0U) {
+        setg(&currentByte, &currentByte, &currentByte);
+    }
 
 protected:
-    virtual int underflow() override {
-        uint8_t ch;
-        HAL_UART_Receive(huart, &ch, 1, HAL_MAX_DELAY); // دریافت یک کاراکتر از پورت سریال
-        // if (ch == '\r') {
-        //     ch = '\n'; // تبدیل '\r' به '\n'
-        // }
-        setg((char*)&ch, (char*)&ch, (char*)&ch + 1); // قرار دادن کاراکتر در بافر ورودی
-        return ch;
+    int_type underflow() override {
+        if (gptr() < egptr()) return traits_type::to_int_type(*gptr());
+        if (huart == nullptr ||
+            HAL_UART_Receive(huart, &currentByte, 1U, HAL_MAX_DELAY) != HAL_OK) {
+            return traits_type::eof();
+        }
+        setg(&currentByte, &currentByte, &currentByte + 1);
+        return traits_type::to_int_type(currentByte);
     }
+
+private:
+    UART_HandleTypeDef* huart;
+    char currentByte; // persistent storage: remains valid after underflow returns
 };
 
-// کلاس UartIO که همه چیز را در خود نگه می‌دارد
 class cUart {
 public:
-    UartOutput uart_output; // شیء برای خروجی (cout)
-    UartInput uart_input; // شیء برای ورودی (cin)
-    std::ostream cout; // ostream برای ارسال داده به سریال
-    std::istream cin; // istream برای دریافت داده از سریال
+    UartOutput uart_output;
+    UartInput uart_input;
+    std::ostream cout;
+    std::istream cin;
 
-    // سازنده‌ای که همه اشیاء را مقداردهی می‌کند و huart را می‌گیرد
-    cUart(UART_HandleTypeDef* huart)
-        : uart_output(huart)
-        , uart_input(huart)
-        , cout(&uart_output)
-        , cin(&uart_input) {}
+    explicit cUart(UART_HandleTypeDef* huart)
+        : uart_output(huart), uart_input(huart),
+          cout(&uart_output), cin(&uart_input) {}
 };
-
