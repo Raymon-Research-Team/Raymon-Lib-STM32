@@ -66,6 +66,59 @@ There is no verified repository-wide build system or single installation command
 
 Include the MCU part number, board, toolchain version, HAL/CMSIS versions, build output, and reproducible steps in bug reports. Do not describe a component as hardware-validated unless it was tested on the specified target.
 
+## 💖 Support Raymon-Lib-STM32
+
+If these STM32 utilities save you time, donations help support continued development, hardware testing, maintenance, and documentation. Donations are voluntary and do not change the repository license or grant additional usage rights.
+
+<div align="center">
+
+[![Donate](https://img.shields.io/badge/Donate-Support%20Development-f97316.svg?style=for-the-badge)](https://donatr.ee/raymon-research-team/)
+[![Contact](https://img.shields.io/badge/Contact-Email-blue.svg?style=for-the-badge)](mailto:rahman.h22@gmail.com)
+
+<a href="https://donatr.ee/raymon-research-team/" target="_blank" rel="noopener noreferrer"><img src="https://raw.githubusercontent.com/Raymon-Research-Team/ZenOS-RTOS/main/docs/guide-html/donate-qr.png" alt="Scan to open the Raymon Research Team donation page" width="190" /></a>
+
+**Scan the QR code or use the donation page:** [donatr.ee/raymon-research-team](https://donatr.ee/raymon-research-team/)
+
+</div>
+
+### 💸 Cryptocurrency donations
+
+> Verify the network before sending. BTC must be sent on the Bitcoin network; the ETH/USDT address below is for Ethereum (ERC-20). Network mismatches can permanently lose funds.
+
+<table>
+<tr>
+<td align="center" width="50%">
+
+### 🟠 Bitcoin (BTC)
+
+[`bc1qd39vgmnweuzh5hp2cqm4cnh782xga6wph3v650`](bitcoin:bc1qd39vgmnweuzh5hp2cqm4cnh782xga6wph3v650)
+
+</td>
+<td align="center" width="50%">
+
+### 🔵 Ethereum (ETH) / USDT (ERC-20)
+
+[`0x1C21c39324F65a38Fb8de9ccB92aB01FdeD1534C`](ethereum:0x1C21c39324F65a38Fb8de9ccB92aB01FdeD1534C)
+
+</td>
+</tr>
+</table>
+
+### 🌟 Other ways to support
+
+<table>
+<tr>
+<td align="center" width="25%">⭐<br><b>Star</b><br>the repository</td>
+<td align="center" width="25%">🐛<br><b>Report</b><br>a bug</td>
+<td align="center" width="25%">🧪<br><b>Test</b><br>a component</td>
+<td align="center" width="25%">📝<br><b>Improve</b><br>documentation</td>
+</tr>
+</table>
+
+After donating, you can email [rahman.h22@gmail.com](mailto:rahman.h22@gmail.com) with the transaction ID if you would like to notify the maintainer. Do not send private keys or seed phrases.
+
+---
+
 ## License
 
 The repository's top-level LICENSE declares **Business Source License 1.1 (BUSL-1.1)**. BUSL-1.1 is not an Open Source license. Review the full terms before use in production or a commercial product. External dependencies remain subject to their own licenses; see [Licensing Notes](docs/LICENSING.md).
