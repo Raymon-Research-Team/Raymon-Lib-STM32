@@ -3,7 +3,8 @@
 #include <iostream>
 #include <cstring>
 #include <cstdio>  
-#include <string>  
+#include <string>
+#include <type_traits>  
 
 //-------------------------------------------------------------------------------------------
 class PrintfUart {
