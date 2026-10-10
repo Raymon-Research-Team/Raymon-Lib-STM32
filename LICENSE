@@ -1,0 +1,58 @@
+Business Source License 1.1
+
+License text copyright (c) 2017 MariaDB Corporation Ab, All Rights Reserved.
+"Business Source License" is a trademark of MariaDB Corporation Ab.
+
+Parameters
+
+Licensor: Raymon Research Team
+
+Licensed Work: Raymon-Lib-STM32
+
+The Licensed Work is (c) 2026 Raymon Research Team.
+
+Additional Use Grant: None
+
+Change Date: 2030-10-10
+
+Change License: GNU General Public License version 2.0 or later
+
+For information about alternative licensing arrangements for the Software, please contact the Licensor through the GitHub organization profile.
+
+Notice
+
+The Business Source License (this document, or the "License") is not an Open Source license. However, the Licensed Work will eventually be made available under an Open Source License, as stated in this License.
+
+For more information about the Business Source License, visit https://mariadb.com/bsl11/.
+
+-----------------------------------------------------------------------------
+
+Business Source License 1.1
+
+Terms
+
+The Licensor hereby grants you the right to copy, modify, create derivative works, redistribute, and make non-production use of the Licensed Work. The Licensor may make an Additional Use Grant, above, permitting limited production use.
+
+Effective on the Change Date, or the fourth anniversary of the first publicly available distribution of a specific version of the Licensed Work under this License, whichever comes first, the Licensor hereby grants you rights under the terms of the Change License, and the rights granted in the paragraph above terminate.
+
+If your use of the Licensed Work does not comply with the requirements currently in effect as described in this License, you must purchase a commercial license from the Licensor, its affiliated entities, or authorized resellers, or you must refrain from using the Licensed Work.
+
+All copies of the original and modified Licensed Work, and derivative works of the Licensed Work, are to be made available under this License. This includes the source code, documentation, and configuration files.
+
+You must preserve all copyright notices contained in the Licensed Work. You may add your own copyright notice to your modifications.
+
+You may distribute the Licensed Work, including modifications and derivative works, provided that you do not alter or remove this License and that you include a copy of this License with the distribution.
+
+You may make modifications and may create derivative works of the Licensed Work, provided that you distribute those modifications and derivative works under this License.
+
+You may use the Licensed Work for non-production purposes, including development, testing, and evaluation.
+
+You may not use the Licensed Work for production purposes except as expressly permitted by an Additional Use Grant or by a separate commercial license agreement with the Licensor.
+
+If you distribute the Licensed Work or make it available to others, you must do so under the terms of this License and include this License with the distribution.
+
+The Licensor provides the Licensed Work on an "AS IS" basis, without warranties or conditions of any kind, either express or implied, including, without limitation, warranties of title, non-infringement, merchantability, or fitness for a particular purpose. The entire risk as to the quality and performance of the Licensed Work is with you.
+
+In no event and under no legal theory, whether in tort (including negligence), contract, or otherwise, unless required by applicable law or agreed to in writing, shall the Licensor be liable to you for damages, including any direct, indirect, special, incidental, or consequential damages of any character arising as a result of this License or out of the use or inability to use the Licensed Work.
+
+END OF TERMS AND CONDITIONS
