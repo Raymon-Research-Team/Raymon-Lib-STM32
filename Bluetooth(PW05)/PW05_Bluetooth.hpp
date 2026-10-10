@@ -26,19 +26,34 @@ private:
 
     //===============================================================================
     // ********** ارسال دستورات AT و دریافت پاسخ **********
-    void sendATCommand(const char *cmd, char *response, uint16_t responseSize, uint32_t timeout) {
+    bool sendATCommand(const char *cmd, char *response, uint16_t responseSize, uint32_t timeout) {
+        if (huart == nullptr || cmd == nullptr || response == nullptr || responseSize == 0U) {
+            return false;
+        }
+        response[0] = '\0';
         setATMode(true);
         char command[50];
-        snprintf(command, sizeof(command), "%s\r\n", cmd);
+        const int commandLength = snprintf(command, sizeof(command), "%s\\r\\n", cmd);
+        if (commandLength < 0 || static_cast<size_t>(commandLength) >= sizeof(command)) {
+            setATMode(false);
+            return false;
+        }
 
         Usart_Flush();
+        const HAL_StatusTypeDef txStatus = HAL_UART_Transmit(
+            huart, reinterpret_cast<uint8_t*>(command),
+            static_cast<uint16_t>(commandLength), timeout);
+        if (txStatus != HAL_OK) {
+            setATMode(false);
+            return false;
+        }
 
-        HAL_UART_Transmit(huart, (uint8_t *)command, strlen(command), HAL_MAX_DELAY);
-       
-        HAL_UART_Receive(huart, (uint8_t *)response, responseSize - 1, timeout);
-        response[responseSize - 1] = '\0'; // اضافه کردن کاراکتر پایان رشته
-        
+        const HAL_StatusTypeDef rxStatus = HAL_UART_Receive(
+            huart, reinterpret_cast<uint8_t*>(response),
+            static_cast<uint16_t>(responseSize - 1U), timeout);
+        response[responseSize - 1U] = '\0';
         setATMode(false);
+        return rxStatus == HAL_OK;
     }
 
     //===============================================================================
