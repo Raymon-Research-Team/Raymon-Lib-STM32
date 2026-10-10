@@ -78,7 +78,7 @@ public:
             outputData[i] = static_cast<uint8_t>(value);
         }
 
-        const int receivedPayloadCrc = buffer->PeekAt(static_cast<uint32_t>(encodedLength) + 3U);
+        const int receivedPayloadCrc = buffer->PeekAt(static_cast<uint32_t>(encodedLength) + 2U);
         if (receivedPayloadCrc < 0) {
             buffer->Remove(1U);
             return 0U;
