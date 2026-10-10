@@ -27,10 +27,10 @@ Raymon-Lib-STM32 مجموعه‌ای از ابزارهای C/C++، مثال‌ه
 | [FlashEEPROM](../FlashEEPROM/README.md) | ذخیره و بازیابی ساختار در فلش داخلی | STM32 HAL و main.h؛ بررسی آدرس فلش ضروری است |
 | [PrintfUart](../PrintfUart/README.md) | ورودی/خروجی قالب‌بندی‌شده UART | STM32 HAL و main.h |
 | [سروو SG90](../ServoMotor%20SG90/Readme.md) | کنترل سروو با PWM | مثال موجود از STM32F1/TIM2 استفاده می‌کند |
-| [FFT برای STM32H743](../FFT(STM32H743VITx)/README.md) | مثال FFT با CMSIS-DSP | نیازمند پیکربندی سازگار CMSIS-DSP |
+| [FFT برای STM32H743](../FFT%28STM32H743VITx%29/README.md) | مثال FFT با CMSIS-DSP | نیازمند پیکربندی سازگار CMSIS-DSP |
 | [پرش به Bootloader](../BOOTLOADER/jump_to_bootloader.c) | مثال وابسته به MCU | نقشهٔ حافظه باید تأیید شود |
 | [قفل برنامه](../Lock_program_in_code/README.md) | توضیحات محافظت firmware | پیش از اجرا اثرهای مخرب احتمالی را بررسی کنید |
-| [نمونهٔ Bluetooth](../Bluetooth(doBT_01)/doBT_01.hpp) | کد وابسته به ماژول | وابسته به سخت‌افزار و پروتکل |
+| [نمونهٔ Bluetooth](../Bluetooth%28doBT_01%29/doBT_01.hpp) | کد وابسته به ماژول | وابسته به سخت‌افزار و پروتکل |
 
 این فهرست بر اساس فایل‌های موجود تهیه شده است؛ وجود فایل به معنی کامپایل موفق یا آزمایش روی سخت‌افزار نیست.
 
