@@ -1,42 +1,41 @@
 #pragma once
 #include "main.h"
-//-------------------------------------------------------------------------------------------
-class Delay
-{
+#include <cstdint>
+#include <limits>
+
+class Delay {
 public:
-    // تابع تاخیر بر اساس میکروثانیه
-    static void delay_us(uint32_t us)
-    {
-        if (!(CoreDebug->DEMCR & CoreDebug_DEMCR_TRCENA_Msk)) {
-            CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk; // فعال‌سازی DWT
+    // Busy-wait delay; requires a Cortex-M core with DWT CYCCNT support.
+    // Not suitable for long delays or use from contexts that must yield.
+    static void delay_us(uint32_t us) {
+        if (us == 0U) return;
+
+        CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
+        DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
+
+        const uint32_t clockFreq = HAL_RCC_GetHCLKFreq();
+        if (clockFreq < 1000000U) return; // avoid a zero cycles/us infinite wait
+        const uint32_t cyclesPerUs = clockFreq / 1000000U;
+        const uint32_t start = DWT->CYCCNT;
+
+        // Chunk the requested interval to avoid multiplication overflow and
+        // keep each unsigned elapsed-cycle comparison below 2^31.
+        uint64_t remaining = static_cast<uint64_t>(us) * cyclesPerUs;
+        while (remaining != 0U) {
+            const uint32_t chunk = remaining > 0x7FFFFFFFULL
+                ? 0x7FFFFFFFU : static_cast<uint32_t>(remaining);
+            const uint32_t chunkStart = DWT->CYCCNT;
+            while (static_cast<uint32_t>(DWT->CYCCNT - chunkStart) < chunk) {}
+            remaining -= chunk;
         }
-        DWT->CYCCNT = 0; // صفر کردن شمارنده
-        DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk; // فعال کردن شمارنده
-        // صفر کردن شمارنده
-        DWT->CYCCNT = 0;
-        
-        
-        uint32_t start =  DWT->CYCCNT;
-        // به‌دست آوردن فرکانس کلاک پردازنده
-        uint32_t clockFreq = HAL_RCC_GetHCLKFreq();
-        uint32_t cycles_per_us = clockFreq / 1000000L;
+        (void)start;
+    }
 
-        // محاسبه تعداد سیکل‌های موردنیاز
-        uint32_t delay_cycles = us * cycles_per_us;
-
-        // انتظار تا زمانی که زمان سپری‌شده به مقدار موردنظر برسد
-        while ((DWT->CYCCNT - start) < delay_cycles) {
-            // حلقه بی‌عمل
+    static void delay_ms(uint32_t ms) {
+        while (ms != 0U) {
+            const uint32_t chunk = ms > 1000U ? 1000U : ms;
+            delay_us(chunk * 1000U);
+            ms -= chunk;
         }
     }
-    //-------------------------------------------------------------------------------------------
-    // تابع تاخیر بر اساس میلی‌ثانیه
-    static void delay_ms(uint32_t ms)
-    {
-        for (uint32_t i = 0; i < ms; i++)
-        {
-            delay_us(999); // تاخیر 1000 میکروثانیه برای هر میلی‌ثانیه
-        }
-    }
-    //-------------------------------------------------------------------------------------------
 };
