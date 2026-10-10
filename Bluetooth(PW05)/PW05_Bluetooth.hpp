@@ -169,8 +169,10 @@ public:
     //===============================================================================
     // ********** تنظیم نام بلوتوث **********
     bool setName(const char *name) {
+        if (name == nullptr) return false;
         char command[40];
-        snprintf(command, sizeof(command), "AT+NAME=%s", name);
+        const int commandLength = snprintf(command, sizeof(command), "AT+NAME=%s", name);
+        if (commandLength < 0 || static_cast<size_t>(commandLength) >= sizeof(command)) return false;
         char response[50];
         sendATCommand(command, response, sizeof(response), 100);
         return strstr(response, "Set NAME") != nullptr;
@@ -208,12 +210,18 @@ public:
     //===============================================================================
     // ********** ارسال داده در حالت Transparent **********
     bool sendData(const uint8_t *data, uint16_t len) {
+        if (huart == nullptr || (data == nullptr && len != 0U)) return false;
+        if (len == 0U) return true;
         return HAL_UART_Transmit(huart, data, len, HAL_MAX_DELAY) == HAL_OK;
     }
 
     //===============================================================================
     // ********** دریافت داده **********
     bool receiveData(uint8_t *buffer, uint16_t len, uint16_t *receivedLen, uint32_t timeout) {
+        if (huart == nullptr || buffer == nullptr || receivedLen == nullptr || len == 0U) {
+            return false;
+        }
+        *receivedLen = 0U;
         HAL_StatusTypeDef status = HAL_UART_Receive(huart, buffer, len, timeout);
         if (status == HAL_OK) {
             *receivedLen = len;
