@@ -4,25 +4,15 @@
 
 ## Repository license
 
-The top-level LICENSE declares Business Source License 1.1 (BUSL-1.1):
+The repository is licensed under the MIT License. See the top-level [LICENSE](../LICENSE) file for the complete terms. The MIT License permits use, copying, modification, distribution, sublicensing, and sale, provided the copyright and permission notice are included in copies or substantial portions of the Software. It is provided without warranty.
 
-- Licensor: Raymon Research Team
-- Licensed Work: Raymon-Lib-STM32
-- Additional Use Grant: None
-- Change Date: 2030-10-10
-- Change License: GNU GPL version 2.0 or later
+## Third-party dependencies
 
-BUSL-1.1 is not an Open Source license. With no Additional Use Grant, the stated grant allows copying, modification, redistribution, and non-production use, subject to the license terms; it does not grant production use before the change takes effect. A commercial license or another permission from the licensor may be needed for production use before then.
+The repository integrates with or documents external components, including STM32 HAL / STM32Cube firmware packages, ARM CMSIS-DSP in the FFT example, and STM32CubeIDE / STM32CubeMX tooling in consuming projects.
 
-**Important timing detail:** for each version, the change to the Change License takes effect on the earlier of the stated Change Date or the fourth anniversary of that version's first publicly available distribution under BUSL-1.1. Therefore, 2030-10-10 is not necessarily the transition date for every version. Read the complete top-level LICENSE before use.
+A complete, verified Software Bill of Materials (SBOM) and per-file provenance record have not been established. These are apparent integration dependencies; this does not mean all their source code is vendored into this repository.
 
-## Dependency boundaries
-
-The repository contains code that integrates with or documents external components, including STM32 HAL / STM32Cube firmware packages, ARM CMSIS-DSP in the FFT example, and STM32CubeIDE / STM32CubeMX tooling in consuming projects.
-
-A complete, verified Software Bill of Materials (SBOM) and per-file provenance record were not established during this pass. The list above identifies apparent integration dependencies; it does not mean all dependency source code is vendored into this repository.
-
-External libraries, generated files, and third-party snippets remain subject to their upstream license terms. The repository's BUSL file does not replace or relicense third-party code. Before redistribution or commercial deployment, identify exact versions, preserve required notices, and verify compatibility with the intended distribution model.
+External libraries, generated files, and third-party snippets remain subject to their own license terms. The repository's MIT License does not relicense third-party code or override upstream conditions. Before redistribution or commercial deployment, identify exact versions, preserve required notices, and verify compatibility with the intended distribution model.
 
 ## Review findings and unresolved items
 
@@ -31,22 +21,16 @@ External libraries, generated files, and third-party snippets remain subject to 
 - This document does not claim that the whole repository or every module has passed legal review.
 - FlashEEPROM and bootloader/read-protection examples need technical review independent of license review.
 
-## Recommended release checklist
+## Release checklist
 
 - [ ] Identify origin and copyright holder for every imported or copied file.
 - [ ] Record exact STM32 HAL, CMSIS-DSP, compiler, and other dependency versions.
 - [ ] Preserve upstream copyright and license notices.
-- [ ] Confirm that each file can be distributed under the repository's declared terms.
-- [ ] Obtain legal review for commercial distribution if ownership or compatibility is uncertain.
+- [ ] Confirm that third-party files can be distributed under their applicable terms.
+- [ ] Obtain legal review if ownership or license compatibility is uncertain.
 
-## Commercial Licensing
+## Commercial use
 
-Raymon-Lib-STM32 is distributed under the Business Source License 1.1 (BUSL-1.1), subject to the parameters in the repository's `LICENSE` file.
-
-The repository's default license does not automatically grant every form of commercial production use before the applicable Change Date. If your intended use is not permitted by the applicable license terms, contact the rights holder to discuss a separate commercial license.
-
-A separate commercial agreement must identify the licensed product or use case, the rights granted, applicable fees (if any), duration, and any distribution or support conditions. No additional rights are granted unless agreed to in writing by an authorized rights holder.
-
-Third-party dependencies may be subject to separate license terms. Users are responsible for reviewing and complying with the applicable terms for those components.
+The MIT License permits commercial use of the repository's original code, subject to its terms. No separate commercial license from the repository maintainer is required for code actually covered by this MIT License. Third-party dependencies may have separate conditions and must be reviewed independently.
 
 For licensing inquiries, contact: rahman.h22@gmail.com.
