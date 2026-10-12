@@ -6,7 +6,7 @@
 
 [![Platform](https://img.shields.io/badge/Platform-STM32%20%2F%20ARM%20Cortex--M-orange.svg?style=for-the-badge)]()
 [![Language](https://img.shields.io/badge/Language-C%2B%2B-blue.svg?style=for-the-badge)]()
-[![License: BUSL-1.1](https://img.shields.io/badge/License-BUSL--1.1-blue.svg?style=for-the-badge)](../LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-BUSL--1.1-blue.svg?style=for-the-badge)](../LICENSE)
 
 [فارسی](README_FA.md) | [English](../README.md)
 
@@ -71,7 +71,7 @@ git clone https://github.com/Raymon-Research-Team/Raymon-Lib-STM32.git
 
 ## مجوز
 
-فایل LICENSE ریشه، **Business Source License 1.1 (BUSL-1.1)** را اعلام می‌کند. این مجوز متن‌باز محسوب نمی‌شود. پیش از استفادهٔ تولیدی یا تجاری، شرایط کامل مجوز و [یادداشت‌های وابستگی](LICENSING.md) را بررسی کنید.
+فایل LICENSE ریشه، **مجوز MIT** را اعلام می‌کند و استفادهٔ تجاری از کدهای اصلی مخزن را با رعایت شرایط آن مجاز می‌داند. وابستگی‌های شخص ثالث ممکن است مجوزهای جداگانه داشته باشند؛ [یادداشت‌های مجوز و وابستگی‌ها](LICENSING_FA.md) را بررسی کنید.
 
 نگهداری: **Raymon Research Team**
 
