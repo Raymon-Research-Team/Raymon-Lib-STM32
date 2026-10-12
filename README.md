@@ -6,7 +6,7 @@
 
 [![Platform](https://img.shields.io/badge/Platform-STM32%20%2F%20ARM%20Cortex--M-orange.svg?style=for-the-badge)]()
 [![Language](https://img.shields.io/badge/Language-C%2B%2B-blue.svg?style=for-the-badge)]()
-[![License: BUSL-1.1](https://img.shields.io/badge/License-BUSL--1.1-blue.svg?style=for-the-badge)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-BUSL--1.1-blue.svg?style=for-the-badge)](LICENSE)
 
 [فارسی](docs/README_FA.md) | [English](README.md)
 
@@ -125,6 +125,6 @@ After donating, you can email [rahman.h22@gmail.com](mailto:rahman.h22@gmail.com
 
 ## License
 
-The repository's top-level LICENSE declares **Business Source License 1.1 (BUSL-1.1)**. BUSL-1.1 is not an Open Source license. Review the full terms before use in production or a commercial product. External dependencies remain subject to their own licenses; see [Licensing Notes](docs/LICENSING.md).
+The repository's top-level [LICENSE](LICENSE) declares the **MIT License**, which permits commercial use subject to its terms. External dependencies remain subject to their own licenses; see [Licensing Notes](docs/LICENSING.md).
 
 Maintained by **Raymon Research Team**.
