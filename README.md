@@ -6,7 +6,7 @@
 
 [![Platform](https://img.shields.io/badge/Platform-STM32%20%2F%20ARM%20Cortex--M-orange.svg?style=for-the-badge)]()
 [![Language](https://img.shields.io/badge/Language-C%2B%2B-blue.svg?style=for-the-badge)]()
-[![License: MIT](https://img.shields.io/badge/License-BUSL--1.1-blue.svg?style=for-the-badge)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
 
 [فارسی](docs/README_FA.md) | [English](README.md)
 
